@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>House Programme</title>
+<style>
+  :root {
+    --paper: #f6f1e7; --ink: #1d1a16; --muted: #6b6257; --rule: #d9cfbd; --card: #fffdf8;
+    --accent: #b4442b; --accent-ink: #fff; --good: #2f6b4f; --warn: #8a5a00; --bar: #e6dcc8;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --paper: #17140f; --ink: #efe8da; --muted: #a39a8b; --rule: #3a342a; --card: #1f1b15;
+            --accent: #e0694d; --accent-ink: #17140f; --good: #7fc7a3; --warn: #e0b45a; --bar: #2c271f; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 var(--sans); }
+  main { max-width: 780px; margin: 0 auto; padding: 40px 16px 72px; }
+  .kicker { font: 600 12px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+  h1 { font: 700 clamp(30px, 6vw, 46px)/1.08 var(--serif); margin: 10px 0 10px; letter-spacing: -.01em; }
+  .lede { color: var(--muted); max-width: 60ch; margin: 0 0 26px; }
+  form { background: var(--card); border: 1px solid var(--rule); border-radius: 14px; padding: 16px; }
+  label { display: block; font-weight: 600; margin-bottom: 8px; }
+  textarea { width: 100%; min-height: 96px; resize: vertical; padding: 12px; border-radius: 10px; border: 1px solid var(--rule);
+             background: var(--paper); color: var(--ink); font: inherit; }
+  textarea:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+  .chip { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 999px; padding: 6px 12px;
+          font: 14px var(--sans); cursor: pointer; }
+  .chip:hover { border-color: var(--accent); }
+  .go { margin-left: auto; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px;
+        padding: 11px 18px; font: 600 15px var(--sans); cursor: pointer; }
+  .go[disabled] { opacity: .55; cursor: progress; }
+  .count { font: 12px var(--mono); color: var(--muted); }
+  .notice { margin-top: 18px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--rule); background: var(--card); }
+  .notice.bad { border-color: var(--accent); }
+  #work { margin: 22px 0 0; padding: 0; list-style: none; font: 13px/1.5 var(--mono); color: var(--muted); }
+  #work li { padding: 4px 0; border-bottom: 1px dashed var(--rule); overflow-wrap: anywhere; }
+  #work .ok { color: var(--good); } #work .fail { color: var(--accent); }
+  article { margin-top: 30px; }
+  article h2 { font: 700 clamp(24px, 5vw, 34px)/1.15 var(--serif); margin: 6px 0 10px; }
+  .read { font: 18px/1.55 var(--serif); margin: 0 0 8px; }
+  .stats { font: 12px var(--mono); color: var(--muted); margin: 0 0 22px; }
+  section { border-top: 2px solid var(--ink); padding-top: 12px; margin-top: 26px; }
+  section h3 { font: 600 12px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; margin: 0 0 12px; }
+  .pick { display: grid; grid-template-columns: 1fr 132px; gap: 6px 16px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .pick:last-child { border-bottom: 0; }
+  .name { font: 600 19px/1.25 var(--serif); }
+  .where { color: var(--muted); font-size: 14px; }
+  .why { grid-column: 1 / -1; margin: 0; }
+  .meter { align-self: start; text-align: right; font: 12px var(--mono); color: var(--muted); }
+  .bar { height: 6px; border-radius: 3px; background: var(--bar); margin-top: 6px; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--good); }
+  .tags { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font: 12px var(--mono); padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); }
+  .tag.driver { color: var(--good); border-color: var(--good); }
+  .caveats { margin-top: 26px; color: var(--warn); font-size: 15px; }
+  .caveats li { margin: 4px 0; }
+  details { margin-top: 26px; } summary { cursor: pointer; font-weight: 600; }
+  details ol { font: 13px/1.5 var(--mono); color: var(--muted); padding-left: 22px; overflow-wrap: anywhere; }
+  footer { margin-top: 44px; color: var(--muted); font-size: 13px; }
+  footer a { color: inherit; }
+  @media (max-width: 520px) { .pick { grid-template-columns: 1fr; } .meter { text-align: left; } .go { width: 100%; margin-left: 0; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">House Programme</div>
+  <h1>Programme your room around what your regulars already love.</h1>
+  <p class="lede">Tell it who comes through the door and where you are. An agent asks Qloo's taste graph what that
+     crowd also loves, across music, film, books, podcasts, brands and nearby places, and shows the evidence for every pick.</p>
+
+  <form id="form">
+    <label for="request">Your crowd, in your own words</label>
+    <textarea id="request" maxlength="600" required
+      placeholder="We run a 40-seat natural wine bar in Lisbon. Regulars talk about Wes Anderson, Phoebe Bridgers and Sally Rooney. Plan our next month."></textarea>
+    <div class="row">
+      <button type="button" class="chip" data-example="We run a 40-seat natural wine bar in Lisbon. Regulars talk about Wes Anderson, Phoebe Bridgers and Sally Rooney. Plan our next month: music, one film night, a book for the club, and neighbours to team up with.">Wine bar, Lisbon</button>
+      <button type="button" class="chip" data-example="Independent bookshop in Chicago with a small cafe. Our readers love Octavia Butler, Studio Ghibli films and the podcast 99% Invisible. What should we screen, stock and play, and which brands fit a pop-up shelf?">Bookshop, Chicago</button>
+      <button type="button" class="chip" data-example="Climbing gym cafe in Denver. Members are into Patagonia, Free Solo, and Khruangbin. Suggest a playlist direction, a film night, a podcast to sponsor and local places to partner with.">Climbing gym, Denver</button>
+      <span class="count" id="count">0 / 600</span>
+      <button class="go" id="go" type="submit">Build the programme</button>
+    </div>
+  </form>
+
+  <div id="notice" class="notice" hidden></div>
+  <ul id="work" aria-live="polite"></ul>
+  <article id="result" hidden></article>
+
+  <footer>Every pick is taken from a taste-graph result; anything the agent adds from memory is removed and listed as unverified.
+    Open source (MIT). Powered by the Qloo API.</footer>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const form = $("form"), box = $("request"), go = $("go"), work = $("work"), result = $("result"), notice = $("notice");
+
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) { if (k === "class") node.className = v; else if (k === "style") node.style.cssText = v; else node.setAttribute(k, v); }
+  for (const child of children) if (child != null) node.append(child.nodeType ? child : document.createTextNode(String(child)));
+  return node;
+}
+function say(text, bad) { notice.hidden = !text; notice.textContent = text || ""; notice.className = "notice" + (bad ? " bad" : ""); }
+function short(args) { const s = JSON.stringify(args); return s.length > 140 ? s.slice(0, 137) + "…" : s; }
+
+box.addEventListener("input", () => { $("count").textContent = box.value.length + " / 600"; });
+document.querySelectorAll(".chip").forEach((chip) => chip.addEventListener("click", () => {
+  box.value = chip.dataset.example; box.dispatchEvent(new Event("input")); box.focus();
+}));
+
+fetch("/api/health").then((r) => r.json()).then((state) => {
+  const missing = Object.entries(state).filter(([, ok]) => !ok).map(([name]) => name.replace("_", " "));
+  if (missing.length) say("This deployment is not fully configured yet (missing: " + missing.join(", ") + ").", true);
+}).catch(() => {});
+
+function renderProgramme(data) {
+  const brief = data.brief, stats = data.stats || {};
+  result.replaceChildren();
+  result.append(el("div", { class: "kicker" }, "This month's programme"));
+  result.append(el("h2", {}, brief.headline || "Your programme"));
+  if (brief.audience_read) result.append(el("p", { class: "read" }, brief.audience_read));
+  result.append(el("p", { class: "stats" },
+    `${stats.tool_calls ?? 0} taste-graph calls · ${stats.kept ?? 0} picks verified · ${stats.dropped ?? 0} removed as unverified · ${stats.seconds ?? "?"}s`));
+  for (const section of brief.sections || []) {
+    const block = el("section", {}, el("h3", {}, section.title || section.kind || ""));
+    for (const pick of section.picks || []) {
+      const pct = typeof pick.affinity === "number" ? Math.round(Math.max(0, Math.min(1, pick.affinity)) * 100) : null;
+      const row = el("div", { class: "pick" },
+        el("div", {}, el("div", { class: "name" }, pick.name), pick.where ? el("div", { class: "where" }, pick.where) : null),
+        pct == null ? el("div", { class: "meter" }, "in graph") :
+          el("div", { class: "meter" }, `affinity ${pct}%`, el("div", { class: "bar" }, el("i", { style: `width:${pct}%` }))),
+        el("p", { class: "why" }, pick.why || ""));
+      const tags = el("div", { class: "tags" });
+      for (const d of (pick.drivers || []).slice(0, 3)) if (d && (d.name || d.signal)) tags.append(el("span", { class: "tag driver" }, "because of " + (d.name || d.signal)));
+      for (const t of (pick.tags || []).slice(0, 4)) tags.append(el("span", { class: "tag" }, t));
+      if (tags.childElementCount) row.append(tags);
+      block.append(row);
+    }
+    result.append(block);
+  }
+  const notes = [...(brief.caveats || [])];
+  for (const u of brief.unverified || []) notes.push(`Removed “${u.name}”: the agent suggested it but the taste graph never returned it.`);
+  if (notes.length) result.append(el("ul", { class: "caveats" }, ...notes.map((n) => el("li", {}, n))));
+  if ((data.trace || []).length) {
+    result.append(el("details", {}, el("summary", {}, "Show the work"),
+      el("ol", {}, ...data.trace.map((t) => el("li", {}, `${t.tool} ${short(t.args)} → ${t.ok ? (t.returned ?? "ok") + (t.returned != null ? " results" : "") : "error: " + t.error}`)))));
+  }
+  result.hidden = false;
+  result.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function handle(event) {
+  if (event.type === "call") work.append(el("li", {}, `asking the taste graph: ${event.tool} ${short(event.args)}`));
+  else if (event.type === "result") work.append(el("li", { class: event.ok ? "ok" : "fail" },
+    event.ok ? `  ↳ ${event.returned ?? "ok"}${event.returned != null ? " results" : ""}` : `  ↳ ${event.error}`));
+  else if (event.type === "programme") { work.replaceChildren(); renderProgramme(event); }
+  else if (event.type === "error") say(event.message, true);
+}
+
+form.addEventListener("submit", async (submit) => {
+  submit.preventDefault();
+  const request = box.value.trim();
+  if (request.length < 8) { say("Tell it a little more about your crowd.", true); return; }
+  say(""); result.hidden = true; work.replaceChildren(el("li", {}, "reading your brief…"));
+  go.disabled = true; go.textContent = "Working…";
+  try {
+    const response = await fetch("/api/programme", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ request }) });
+    if (!response.ok) { const body = await response.json().catch(() => ({})); throw new Error(body.error || "The server refused the request."); }
+    const reader = response.body.getReader(), decoder = new TextDecoder();
+    let buffer = "";
+    for (;;) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      let cut;
+      while ((cut = buffer.indexOf("\n\n")) >= 0) {
+        const line = buffer.slice(0, cut).trim(); buffer = buffer.slice(cut + 2);
+        if (line.startsWith("data: ")) handle(JSON.parse(line.slice(6)));
+      }
+    }
+  } catch (error) { say(error.message || "Could not reach the server.", true); work.replaceChildren(); }
+  finally { go.disabled = false; go.textContent = "Build the programme"; }
+});
+</script>
+</body>
+</html>

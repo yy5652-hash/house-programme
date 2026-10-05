@@ -1,0 +1,27 @@
+[project]
+name = "taste-mcp"
+version = "0.1.0"
+description = "House Programme: an agent and MCP server that programme a venue from Qloo's taste graph, with evidence for every pick"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = []
+
+[project.optional-dependencies]
+server = ["mcp>=1.2"]
+app = ["fastapi>=0.110", "uvicorn>=0.29"]
+dev = ["mcp>=1.2", "fastapi>=0.110", "uvicorn>=0.29", "httpx>=0.27"]
+
+[project.scripts]
+taste-mcp = "taste_mcp.server:main"
+house-programme = "taste_mcp.app:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+taste_mcp = ["web/*.html"]
