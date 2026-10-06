@@ -13,7 +13,7 @@ from taste_mcp.app import RateLimiter, create_app  # noqa: E402
 from taste_mcp.qloo import QlooClient  # noqa: E402
 from test_agent import BRIDGE_CALL, ScriptedModel, client_and_transport, final  # noqa: E402
 
-ASK = {"request": "Regulars love Wes Anderson. We are in Lisbon."}
+ASK = {"request": "Regulars love Wes Anderson. We are in Lisbon.", "compare": False}
 
 
 KeyedModel = ScriptedModel  # a scripted model needs no key, so it always counts as configured

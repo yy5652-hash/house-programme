@@ -19,6 +19,7 @@ from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from .agent import run_brief
+from .compare import compare
 from .llm import ModelError, default_model
 from .qloo import QlooClient, QlooError
 
@@ -43,6 +44,7 @@ def load_env_file(path: Path) -> None:
 
 class BriefRequest(BaseModel):
     request: str = Field(min_length=8, max_length=MAX_REQUEST_CHARS)
+    compare: bool = True     # also ask the model unaided and check its suggestions against the graph
 
 
 class RateLimiter:
@@ -99,6 +101,16 @@ def create_app(client: QlooClient = None, model=None, limiter: RateLimiter = Non
                 result = run_brief(llm, qloo, body.request, on_event=events.put)
                 result["stats"]["seconds"] = round(time.monotonic() - started, 1)
                 events.put({"type": "programme", **result})
+                if body.compare:
+                    events.put({"type": "comparing"})
+                    try:
+                        events.put({"type": "comparison", **compare(llm, qloo, body.request, result)})
+                    except (ModelError, QlooError, ValueError) as error:
+                        events.put({"type": "comparison", "rows": [], "summary": None, "problem": str(error)[:200]})
+                    except Exception:  # the programme is already delivered; never turn it into a failure
+                        import logging
+                        logging.getLogger("taste_mcp").exception("comparison failed")
+                        events.put({"type": "comparison", "rows": [], "summary": None, "problem": "it failed unexpectedly"})
             except (ModelError, QlooError) as error:
                 events.put({"type": "error", "message": str(error)[:300]})
             except Exception:  # keep details out of the browser; the server log has the traceback

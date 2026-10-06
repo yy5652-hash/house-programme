@@ -1,0 +1,13 @@
+# Render blueprint: one free web service built from this repository's Dockerfile.
+# Create it with "New > Blueprint" and paste the two keys when asked; they are stored as secrets on Render.
+services:
+  - type: web
+    name: house-programme
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: QLOO_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false

@@ -114,6 +114,7 @@ def run_brief(
     messages: List[dict] = [{"role": "user", "text": request.strip()}]
     trace: List[dict] = []
     evidence: Dict[str, dict] = {}
+    signal_ids: List[str] = []          # entity ids the run used as audience signals
     final_text: Optional[str] = None
 
     for step in range(max_steps):
@@ -131,9 +132,13 @@ def run_brief(
             emit({"type": "call", "step": step + 1, "tool": call["name"], "args": call.get("args", {})})
             outcome = call_tool(client, call["name"], dict(call.get("args") or {}))
             _collect_evidence(outcome, evidence)
+            result = outcome.get("result")
+            used = list((call.get("args") or {}).get("entity_ids") or []) if call["name"] in ("recommend", "score_candidates") else []
+            if call["name"] == "bridge_tastes" and isinstance(result, dict):
+                used = [r.get("id") for r in (result.get("seeds") or {}).get("resolved", [])]
+            signal_ids.extend(i for i in used if i and i not in signal_ids)
             entry = {"step": step + 1, "tool": call["name"], "args": call.get("args", {}), "ok": bool(outcome.get("ok")),
                      "error": outcome.get("error")}
-            result = outcome.get("result")
             if isinstance(result, list):
                 entry["returned"] = len(result)
             elif isinstance(result, dict) and isinstance(result.get("picks"), list):
@@ -156,9 +161,11 @@ def run_brief(
 
     grounded = _ground(brief, evidence)
     emit({"type": "done", "grounding": grounded["grounding"]})
+    names = {proof["id"]: proof["name"] for proof in evidence.values() if proof.get("id")}
     return {
         "brief": grounded,
         "trace": trace,
+        "seeds": [{"id": i, "name": names.get(i)} for i in signal_ids],
         "stats": {"tool_calls": len(trace), "failed_calls": sum(1 for t in trace if not t["ok"]),
                   "entities_seen": len(evidence), **grounded["grounding"]},
     }

@@ -2,7 +2,7 @@
 
     .venv/bin/python scripts/live_model_check.py ["request text"]
 
-Uses real model requests (about three per run). The taste results are sample data, not Qloo output.
+Uses real model requests (about four per run). The taste results are sample data, not Qloo output.
 """
 import json
 import sys
@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from taste_mcp.agent import run_brief  # noqa: E402
 from taste_mcp.app import load_env_file  # noqa: E402
+from taste_mcp.compare import compare  # noqa: E402
 from taste_mcp.llm import ModelError, default_model  # noqa: E402
 from taste_mcp.qloo import QlooClient  # noqa: E402
 
@@ -58,6 +59,12 @@ def main() -> int:
         print("     why:", section["picks"][0]["why"][:160])
     print("unverified:", brief["unverified"])
     print("caveats:", brief.get("caveats"))
+    request = sys.argv[1] if len(sys.argv) > 1 else DEFAULT
+    second = compare(counted, client, request, out)
+    print("second opinion (model with no tools), model requests so far:", counted.requests)
+    for row in second["rows"]:
+        print("  ", row["kind"], "|", row["name"], "|", row["status"], row.get("affinity", ""))
+    print("summary:", second["summary"], second.get("problem", ""))
     return 0
 
 

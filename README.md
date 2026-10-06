@@ -21,6 +21,7 @@ run against the live Qloo API, because the hackathon key has not arrived.
 | Tool registry | `src/taste_mcp/registry.py` | Six tools with JSON schemas and argument checks, shared by everything below. |
 | MCP server | `src/taste_mcp/server.py` | Exposes the same six tools to any MCP client over stdio. |
 | Agent | `src/taste_mcp/agent.py` | Tool-calling loop with a step budget and a full trace. |
+| Second opinion | `src/taste_mcp/compare.py` | Asks the model unaided, then checks every suggestion against the graph. |
 | Model adapter | `src/taste_mcp/llm.py` | Gemini over REST, or any OpenAI-style provider, with function calling. Standard library only. |
 | Web app | `src/taste_mcp/app.py`, `src/taste_mcp/web/index.html` | One page; the agent's steps stream in as it works. |
 
@@ -31,6 +32,11 @@ The taste graph answers from what people who like her also turn out to like, acr
 to mix the two up: after the model writes its programme, the loop checks every pick against the tool results and
 **removes anything the taste graph never returned**, listing it as unverified. The page shows how many picks were kept
 and how many were removed.
+
+Then it shows the difference instead of asserting it. After the programme is delivered, the same model is asked the
+same question with no tools, and each of its suggestions is looked up in the graph and scored against the same
+audience signals (`src/taste_mcp/compare.py`). The page lists them under "Second opinion": chosen by the graph too,
+in the graph but weaker than the programme, in the graph with no tie to this crowd, or not found at all.
 
 ## Run it
 
@@ -69,8 +75,11 @@ Tools: `find_entities`, `find_tags`, `list_audiences`, `recommend`, `bridge_tast
 
 ## Deploy
 
-The `Dockerfile` listens on port 7860, which is what a Docker Space on Hugging Face expects. Set `QLOO_API_KEY` and
-the model key as secrets on the host; they are read on the server and never sent to the browser.
+The app reads `PORT` (7860 by default) and needs `QLOO_API_KEY` plus the model key as secrets on the host; they are
+read on the server and never sent to the browser.
+
+- Render: `render.yaml` is a blueprint for a free web service built from the `Dockerfile`.
+- Hugging Face: `deploy/huggingface/` holds the two files a Docker Space needs; it installs the app from a pinned commit.
 
 ## Licence
 

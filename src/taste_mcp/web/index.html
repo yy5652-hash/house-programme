@@ -61,9 +61,14 @@
   .caveats li { margin: 4px 0; }
   details { margin-top: 26px; } summary { cursor: pointer; font-weight: 600; }
   details ol { font: 13px/1.5 var(--mono); color: var(--muted); padding-left: 22px; overflow-wrap: anywhere; }
+  .second .lead { margin: 0 0 6px; }
+  .second .pick { grid-template-columns: 1fr 270px; }
+  .second .verdict { align-self: start; text-align: right; font: 12px var(--mono); color: var(--muted); }
+  .second .verdict.same { color: var(--good); } .second .verdict.off { color: var(--warn); }
+  .pending { font: 13px var(--mono); color: var(--muted); margin-top: 26px; }
   footer { margin-top: 44px; color: var(--muted); font-size: 13px; }
   footer a { color: inherit; }
-  @media (max-width: 520px) { .pick { grid-template-columns: 1fr; } .meter { text-align: left; } .go { width: 100%; margin-left: 0; } }
+  @media (max-width: 520px) { .pick, .second .pick { grid-template-columns: 1fr; } .meter, .second .verdict { text-align: left; } .go { width: 100%; margin-left: 0; } }
 </style>
 </head>
 <body>
@@ -153,11 +158,46 @@ function renderProgramme(data) {
   result.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function renderComparison(data) {
+  document.querySelectorAll(".pending, .second").forEach((node) => node.remove());
+  const rows = data.rows || [], s = data.summary;
+  if (!rows.length) { if (data.problem) result.append(el("p", { class: "pending" }, "The unaided comparison could not be run: " + data.problem)); return; }
+  const pct = (a) => Math.round(Math.max(0, Math.min(1, a)) * 100) + "%";
+  const block = el("section", { class: "second" }, el("h3", {}, "Second opinion: the model on its own"));
+  const parts = [`Asked the same question with no taste graph, the model suggested ${s.suggested} things.`,
+    `${s.in_programme} are in your programme.`];
+  if (s.scored) parts.push(`${s.scored} more are in the graph with a measurable tie to this crowd` +
+    (s.programme_floor != null ? ` (${s.scored_below_programme} of them weaker than anything in the programme).` : "."));
+  if (s.no_affinity) parts.push(`${s.no_affinity} are in the graph but show no tie to this crowd.`);
+  if (s.not_in_graph) parts.push(`${s.not_in_graph} could not be found in the graph.`);
+  if (s.unchecked) parts.push(`${s.unchecked} could not be checked.`);
+  block.append(el("p", { class: "lead" }, parts.join(" ")));
+  const verdicts = {
+    in_programme: (r) => ["same", "the taste graph chose it too" + (typeof r.affinity === "number" ? " · " + pct(r.affinity) : "")],
+    scored: (r) => [s.programme_floor != null && r.affinity < s.programme_floor ? "off" : "", "affinity " + pct(r.affinity) +
+      (s.programme_floor != null && r.affinity < s.programme_floor ? " · below your programme" : "")],
+    no_affinity: () => ["off", "in the graph, no tie to this crowd"],
+    not_in_graph: () => ["off", "not found in the taste graph"],
+    unchecked: () => ["", "could not be checked"],
+  };
+  for (const row of rows) {
+    const [tone, text] = (verdicts[row.status] || verdicts.unchecked)(row);
+    block.append(el("div", { class: "pick" },
+      el("div", {}, el("div", { class: "name" }, row.name), el("div", { class: "where" }, row.kind.replace("_", " ") +
+        (row.resolved_as ? " · matched to " + row.resolved_as : ""))),
+      el("div", { class: "verdict " + tone }, text)));
+  }
+  const anchor = result.querySelector("details");
+  if (anchor) result.insertBefore(block, anchor); else result.append(block);
+}
+
 function handle(event) {
   if (event.type === "call") work.append(el("li", {}, `asking the taste graph: ${event.tool} ${short(event.args)}`));
   else if (event.type === "result") work.append(el("li", { class: event.ok ? "ok" : "fail" },
     event.ok ? `  ↳ ${event.returned ?? "ok"}${event.returned != null ? " results" : ""}` : `  ↳ ${event.error}`));
   else if (event.type === "programme") { work.replaceChildren(); renderProgramme(event); }
+  else if (event.type === "comparing") result.append(el("p", { class: "pending" }, "Now asking the model what it would have said on its own…"));
+  else if (event.type === "comparison") renderComparison(event);
   else if (event.type === "error") say(event.message, true);
 }
 

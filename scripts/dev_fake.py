@@ -32,15 +32,22 @@ def transport(url, headers, timeout):
     params = dict(parse_qsl(parsed.query))
     time.sleep(0.35)
     if parsed.path == "/search":
-        hit = SEEDS.get(params.get("query", ""))
-        body = {"results": [{"entity_id": hit[0], "name": params["query"], "types": [f"urn:entity:{hit[1]}"]}] if hit else []}
+        query = params.get("query", "")
+        hit = SEEDS.get(query)
+        for kind, rows in SAMPLE.items():          # sample picks can be looked up too, so the comparison has something to find
+            for i, (name, *_rest) in enumerate(rows):
+                if name.lower() == query.lower():
+                    hit = (f"S-{kind}-{i}", kind)
+                    query = name
+        body = {"results": [{"entity_id": hit[0], "name": query, "types": [f"urn:entity:{hit[1]}"]}] if hit else []}
     else:
         kind = params.get("filter.type", "").split(":")[-1]
-        body = {"results": {"entities": [
+        wanted = set(filter(None, params.get("filter.results.entities", "").split(",")))
+        body = {"results": {"entities": [entity for entity in [
             {"entity_id": f"S-{kind}-{i}", "name": name, "type": f"urn:entity:{kind}", "tags": [f"urn:tag:x:{t.replace(' ', '_')}" for t in tags],
              "properties": {"geocode": {"name": "Lisbon", "country_code": "PT"}} if kind == "place" else {},
              "query": {"affinity": score, "explainability": {driver: 0.8}}}
-            for i, (name, score, tags, driver) in enumerate(SAMPLE.get(kind, []))]}}
+            for i, (name, score, tags, driver) in enumerate(SAMPLE.get(kind, []))] if not wanted or entity["entity_id"] in wanted]}}
     return 200, {}, json.dumps(body).encode()
 
 
@@ -49,6 +56,11 @@ class SampleModel:
 
     def step(self, system, messages, tools, **_):
         time.sleep(0.5)
+        if "no tools" in system:      # the unaided second opinion
+            return {"text": json.dumps({"picks": [
+                {"kind": "artist", "name": "Big Thief"}, {"kind": "artist", "name": "Bon Iver"}, {"kind": "artist", "name": "Mitski"},
+                {"kind": "movie", "name": "Frances Ha"}, {"kind": "movie", "name": "The Grand Budapest Hotel"},
+                {"kind": "book", "name": "Normal People"}, {"kind": "place", "name": "Time Out Market"}]}), "calls": []}
         turns = sum(1 for m in messages if m["role"] == "tool")
         if turns == 0:
             return {"text": None, "calls": [{"name": "find_entities", "args": {"names": list(SEEDS) + ["Some Obscure Zine"]}}]}
