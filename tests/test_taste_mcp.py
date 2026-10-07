@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from taste_mcp.qloo import (QlooClient, QlooError, entity_urn, summarize_audiences, summarize_entities,  # noqa: E402
                             summarize_entity, summarize_tags, thumbnail)
-from taste_mcp.tools import in_city, safe_call, taste_bridge  # noqa: E402
+from taste_mcp.tools import in_city, resolve_entities, safe_call, taste_bridge  # noqa: E402
 
 KEY = "test-key-not-real"
 
@@ -262,6 +262,34 @@ class LiveShapeTests(unittest.TestCase):
 def place(name, city, where_name=None, affinity=0.8):
     return {"entity_id": "P-" + name, "name": name, "type": "urn:entity", "subtype": "urn:entity:place",
             "properties": {"geocode": {"city": city, "name": where_name, "country_code": "PT"}}, "query": {"affinity": affinity}}
+
+
+class ResolveTests(unittest.TestCase):
+    HITS = {
+        "Patagonia": [("L-1", "Patagonia", "locality"), ("B-1", "Patagonia", "brand")],
+        "Banana Yoshiconductor": [("X-1", "Banana Island", "movie")],
+        "Ghibli": [("G-1", "Studio Ghibli", "brand")],
+    }
+
+    def client(self):
+        def search(params):
+            return 200, {}, {"results": [{"entity_id": i, "name": n, "types": [f"urn:entity:{k}"]}
+                                         for i, n, k in self.HITS.get(params["query"], [])]}
+        return QlooClient(KEY, transport=FakeTransport(routes={"/search": search}))
+
+    def test_a_same_named_thing_wins_over_a_place_when_no_kind_was_asked_for(self):
+        found = resolve_entities(self.client(), ["Patagonia"])["resolved"][0]
+        self.assertEqual((found["id"], found["type"]), ("B-1", "brand"))
+        self.assertEqual(found["alternatives"], ["Patagonia (locality)"])
+
+    def test_an_asked_kind_is_respected(self):
+        found = resolve_entities(self.client(), ["Patagonia"], ["locality"])["resolved"][0]
+        self.assertEqual(found["id"], "L-1")
+
+    def test_a_nearest_match_with_a_different_name_is_a_miss(self):
+        out = resolve_entities(self.client(), ["Banana Yoshiconductor", "Ghibli"])
+        self.assertEqual(out["unresolved"], ["Banana Yoshiconductor"])
+        self.assertEqual([r["name"] for r in out["resolved"]], ["Studio Ghibli"])
 
 
 class VenueTests(unittest.TestCase):

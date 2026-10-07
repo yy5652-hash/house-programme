@@ -33,7 +33,10 @@ How to work:
    ids you do not have yet has to wait for the next turn. bridge_tastes takes names, so it can go in the first turn.
 3. Use only names that came back from a tool. Never add a pick from memory. If the graph returns nothing for a kind,
    say so in caveats instead of filling the gap.
-4. When a seed could not be resolved or resolved to the wrong thing, say so in caveats.
+4. When a seed could not be resolved or resolved to the wrong thing, say so in caveats. Copy the favourites exactly as
+   the host wrote them; do not alter or complete a name.
+5. Unless the host asks for something narrower, a programme always has music (artist), a film night (movie) and a book
+   (book); add podcasts, brands and neighbours when they fit.
 
 Finish with JSON only, no prose around it:
 {"headline": "one line the host could put on a poster",
@@ -122,6 +125,7 @@ def _ground(brief: dict, evidence: Dict[str, dict]) -> dict:
     """Attach evidence to each pick; move anything the tools never returned into ``unverified``."""
     kept_total, dropped = 0, []
     sections = []
+    used = set()                                   # a thing appears once, in the first section that names it
     names_by_id = {proof["id"]: proof["name"] for proof in evidence.values() if proof.get("id")}
     for section in brief.get("sections") or []:
         picks = []
@@ -131,6 +135,9 @@ def _ground(brief: dict, evidence: Dict[str, dict]) -> dict:
             if not proof:
                 dropped.append({"name": name, "section": section.get("title")})
                 continue
+            if proof["name"].lower() in used:
+                continue
+            used.add(proof["name"].lower())
             extra = {k: proof[k] for k in ("id", "affinity", "where", "tags", "detail", "image", "thumb", "website", "rating") if k in proof}
             drivers = [  # show the seed's name, not its id; drop drivers that cannot be named
                 {**d, "name": d.get("name") or names_by_id.get(d.get("signal"))}
@@ -145,6 +152,22 @@ def _ground(brief: dict, evidence: Dict[str, dict]) -> dict:
             sections.append({**section, "picks": picks})
     return {**brief, "sections": sections, "unverified": dropped,
             "grounding": {"kept": kept_total, "dropped": len(dropped)}}
+
+
+_STAPLES = ("artist", "movie", "book")      # what a venue can always programme: music, a film night, a book
+
+
+def _missing_staples(final_text: Optional[str], request: str) -> List[str]:
+    """Staple kinds the draft answer left out, unless the host's own words show they did not want them."""
+    try:
+        draft = extract_json(final_text or "")
+    except ValueError:
+        return []
+    kinds = {section.get("kind") for section in (draft.get("sections") or []) if isinstance(section, dict)} if isinstance(draft, dict) else set()
+    wording = request.lower()
+    if any(phrase in wording for phrase in ("only ", "just ", "nothing but")):
+        return []
+    return [kind for kind in _STAPLES if kind not in kinds]
 
 
 def run_brief(
@@ -165,10 +188,20 @@ def run_brief(
     known_ids: set = set()              # every id a tool has returned so far
     final_text: Optional[str] = None
 
+    nudged = False
     for step in range(max_steps):
         reply = model.step(SYSTEM_PROMPT, messages, tools)
         calls = reply.get("calls") or []
         if not calls:
+            missing = [] if nudged else _missing_staples(reply.get("text"), request)
+            if missing and step < max_steps - 1:
+                # The model sometimes answers one part of the brief and stops. Ask once for the rest.
+                nudged = True
+                messages.append({"role": "model", "text": reply.get("text"), **({"raw": reply["raw"]} if reply.get("raw") else {})})
+                messages.append({"role": "user", "text": (
+                    f"The programme has no section for: {', '.join(missing)}. Ask the taste graph for those kinds too, using all of "
+                    "the crowd's favourites as signals, then give the complete final JSON.")})
+                continue
             final_text = reply.get("text")
             break
         turn = {"role": "model", "text": reply.get("text"), "calls": calls}

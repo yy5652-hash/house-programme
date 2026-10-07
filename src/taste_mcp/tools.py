@@ -5,6 +5,7 @@ the ids that were resolved) so an agent can cite what the taste graph said rathe
 """
 from __future__ import annotations
 
+import difflib
 import re
 import unicodedata
 from typing import Iterable, List, Mapping, Optional
@@ -45,16 +46,33 @@ def in_city(places: List[dict], city: str, take: int) -> dict:
     return {"picks": local[:take], "outside_city": len(places) - len(local)}
 
 
+_GEOGRAPHY = {"locality", "destination", "place"}
+
+
+def _same_thing(asked: str, found: str) -> bool:
+    """Search always returns its nearest match; accept it only when the names really correspond."""
+    a, b = _plain(asked), _plain(found)
+    return bool(a and b) and (a in b or b in a or difflib.SequenceMatcher(None, a, b).ratio() >= 0.6)
+
+
 def resolve_entities(client: QlooClient, names: Iterable[str], types: Optional[Iterable[str]] = None) -> dict:
-    """Resolve free-text names to Qloo entity ids, keeping the misses visible."""
+    """Resolve free-text names to Qloo entity ids, keeping the misses visible.
+
+    Two guards, both learned from live runs: a hit whose name does not correspond to what was asked is a miss, not a
+    match ("Banana Yoshiconductor" must not become "Banana Island"); and when no kind was asked for, something that is
+    not a place wins over a place of the same name ("Patagonia" the brand over Patagonia the region).
+    """
     resolved, unresolved = [], []
     for name in names:
         name = name.strip()
         if not name:
             continue
-        hits = summarize_entities(client.search(name, types=types, take=3))
+        hits = [h for h in summarize_entities(client.search(name, types=types, take=5)) if _same_thing(name, h.get("name", ""))]
+        if not types:
+            hits.sort(key=lambda h: h.get("type") in _GEOGRAPHY)       # stable: keeps the API's order within each group
         if hits:
-            resolved.append({"asked": name, **hits[0], "alternatives": [h.get("name") for h in hits[1:]]})
+            resolved.append({"asked": name, **hits[0],
+                             "alternatives": [f"{h.get('name')} ({h.get('type')})" for h in hits[1:3] if h.get("id") != hits[0].get("id")]})
         else:
             unresolved.append(name)
     return {"resolved": resolved, "unresolved": unresolved}

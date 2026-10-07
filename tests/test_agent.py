@@ -37,11 +37,14 @@ BRIDGE_CALL = {"text": None, "calls": [{"name": "bridge_tastes",
                                         "args": {"seeds": ["Wes Anderson"], "target_type": "place", "city": "Lisbon"}}]}
 
 
-def final(picks, caveats=()):
+def final(picks, caveats=(), staples=True):
+    """A final answer with one place section. The empty staple sections stand for "the model covered these kinds";
+    grounding drops sections without picks, so they never show in a result."""
+    sections = [{"title": "Where to send them", "kind": "place", "picks": [{"name": n, "why": "fits"} for n in picks]}]
+    if staples:
+        sections += [{"title": kind, "kind": kind, "picks": []} for kind in ("artist", "movie", "book")]
     return {"text": json.dumps({"headline": "A night out", "audience_read": "Whimsy and melancholy.",
-                                "sections": [{"title": "Where to send them", "kind": "place",
-                                              "picks": [{"name": n, "why": "fits"} for n in picks]}],
-                                "caveats": list(caveats)}), "calls": []}
+                                "sections": sections, "caveats": list(caveats)}), "calls": []}
 
 
 class AgentLoopTests(unittest.TestCase):
@@ -139,6 +142,36 @@ class AgentLoopTests(unittest.TestCase):
         self.assertEqual(transport.calls[-1]["params"]["filter.tags"], "urn:tag:genre:place:record_store")
         self.assertEqual(result["brief"]["unverified"], [{"name": "Record store", "section": "Where to send them"}])
 
+    def test_a_draft_without_music_film_or_books_is_sent_back_once(self):
+        client, _ = client_and_transport()
+        model = ScriptedModel([BRIDGE_CALL, final(["Pensão Amor"], staples=False),
+                               {"text": None, "calls": [{"name": "bridge_tastes", "args": {"seeds": ["Wes Anderson"], "target_type": "movie"}}]},
+                               final(["Pensão Amor"], staples=False)])            # still incomplete: accepted, no second nudge
+        result = run_brief(model, client, "Regulars love Wes Anderson. We are in Lisbon.")
+        nudge = model.seen[2]["messages"][-1]
+        self.assertEqual(nudge["role"], "user")
+        self.assertIn("no section for: artist, movie, book", nudge["text"])
+        self.assertEqual(model.seen[2]["messages"][-2]["role"], "model")          # the draft stays in the conversation
+        self.assertEqual(len(model.seen), 4)
+        self.assertEqual(result["stats"]["tool_calls"], 2)
+
+    def test_a_host_who_asks_for_one_thing_only_is_not_sent_back(self):
+        client, _ = client_and_transport()
+        model = ScriptedModel([BRIDGE_CALL, final(["Pensão Amor"], staples=False)])
+        run_brief(model, client, "Just tell us which bars nearby to team up with. Regulars love Wes Anderson.")
+        self.assertEqual(len(model.seen), 2)
+
+    def test_a_pick_named_in_two_sections_is_kept_once(self):
+        client, _ = client_and_transport()
+        twice = {"text": json.dumps({"headline": "h", "audience_read": "r", "caveats": [], "sections": [
+            {"title": "Bars", "kind": "place", "picks": [{"name": "Pensão Amor", "why": "a"}]},
+            {"title": "More bars", "kind": "place", "picks": [{"name": "pensão amor", "why": "b"}]},
+            {"title": "m", "kind": "artist", "picks": []}, {"title": "f", "kind": "movie", "picks": []}, {"title": "b", "kind": "book", "picks": []}]}),
+            "calls": []}
+        result = run_brief(ScriptedModel([BRIDGE_CALL, twice]), client, "x")
+        self.assertEqual([(s["title"], len(s["picks"])) for s in result["brief"]["sections"]], [("Bars", 1)])
+        self.assertEqual(result["stats"]["kept"], 1)
+
     def test_unusable_final_answer_is_an_error(self):
         client, _ = client_and_transport()
         with self.assertRaises(ModelError):
@@ -219,6 +252,71 @@ class GeminiAdapterTests(unittest.TestCase):
         without_lite = {"models": [m for m in listing["models"] if "lite" not in m["name"]]}
         model, _ = self.make([without_lite], model=None)
         self.assertEqual(model.model, "gemini-3.0-flash")
+
+    LISTING = {"models": [{"name": f"models/{n}", "supportedGenerationMethods": ["generateContent"]}
+                          for n in ("gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.8-flash", "gemini-3.5-flash",
+                                    "gemini-3.0-flash", "gemini-3.8-flash-tts")]}
+    OK = {"candidates": [{"content": {"parts": [{"text": "hello"}]}}]}
+
+    def scripted(self, outcomes, model=None):
+        """``outcomes``: per generateContent request, a reply dict or a ModelError to raise."""
+        tried = []
+
+        def http(method, url, headers, body, timeout):
+            if method == "GET":
+                return self.LISTING
+            tried.append(url.rsplit("/", 1)[-1].split(":")[0])
+            outcome = outcomes.pop(0)
+            if isinstance(outcome, Exception):
+                raise outcome
+            return outcome
+
+        return GeminiModel("secret-key", model, http=http), tried
+
+    def test_a_busy_model_hands_over_to_the_next_and_the_adapter_stays_there(self):
+        model, tried = self.scripted([ModelError("HTTP 503", 503, busy=True), self.OK, self.OK])
+        ask = [{"role": "user", "text": "x"}]
+        self.assertEqual(model.step("s", ask, [])["text"], "hello")
+        self.assertEqual(model.step("s", ask, [])["text"], "hello")
+        self.assertEqual(tried, ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.1-flash-lite"])
+        self.assertEqual(model.model, "gemini-3.1-flash-lite")
+
+    def test_a_model_that_answers_slowly_is_not_asked_first_next_time(self):
+        ticks = iter([0.0, 20.0, 100.0, 101.0])                  # first request takes 20 s, second 1 s
+        tried = []
+
+        def http(method, url, headers, body, timeout):
+            if method == "GET":
+                return self.LISTING
+            tried.append(url.rsplit("/", 1)[-1].split(":")[0])
+            return self.OK
+
+        model = GeminiModel("secret-key", http=http, clock=lambda: next(ticks))
+        ask = [{"role": "user", "text": "x"}]
+        model.step("s", ask, [])
+        model.step("s", ask, [])
+        self.assertEqual(tried, ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite"])
+        self.assertEqual(model.model, "gemini-3.1-flash-lite")
+
+    def test_the_order_is_lite_models_then_full_ones_newest_first(self):
+        busy = ModelError("the model's free daily quota is used up", 429, busy=True)
+        model, tried = self.scripted([busy, busy, busy, busy])
+        with self.assertRaises(ModelError) as caught:
+            model.step("s", [{"role": "user", "text": "x"}], [])
+        self.assertEqual(tried, ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.8-flash", "gemini-3.5-flash"])
+        self.assertEqual(caught.exception.public, "The language model is busy right now. Please try again in a minute.")
+
+    def test_an_error_that_is_not_about_load_is_not_retried_elsewhere(self):
+        model, tried = self.scripted([ModelError("HTTP 400: bad request", 400)])
+        with self.assertRaisesRegex(ModelError, "HTTP 400"):
+            model.step("s", [{"role": "user", "text": "x"}], [])
+        self.assertEqual(tried, ["gemini-3.5-flash-lite"])
+
+    def test_a_pinned_model_has_no_fallback(self):
+        model, tried = self.scripted([ModelError("HTTP 503", 503, busy=True)], model="gemini-pinned")
+        with self.assertRaises(ModelError):
+            model.step("s", [{"role": "user", "text": "x"}], [])
+        self.assertEqual(tried, ["gemini-pinned"])
 
     def test_missing_key_and_empty_reply(self):
         with self.assertRaises(ModelError):

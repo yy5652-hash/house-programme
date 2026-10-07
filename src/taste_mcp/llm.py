@@ -29,7 +29,19 @@ GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta"
 
 
 class ModelError(RuntimeError):
-    pass
+    """``status`` is the HTTP status when there was one. ``busy`` means another model, or the same one later, may work."""
+
+    def __init__(self, message: str, status: Optional[int] = None, busy: bool = False):
+        super().__init__(message)
+        self.status = status
+        self.busy = busy
+
+    @property
+    def public(self) -> str:
+        """What a visitor should read: no provider payloads."""
+        if self.busy:
+            return "The language model is busy right now. Please try again in a minute."
+        return str(self)[:300]
 
 
 def _to_gemini_schema(schema: Dict[str, Any]) -> Dict[str, Any]:
@@ -48,7 +60,7 @@ def _to_gemini_schema(schema: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _http_json(method: str, url: str, headers: Dict[str, str], body: Optional[dict], timeout: float,
-               *, retries: int = 2, sleep: Callable[[float], None] = time.sleep) -> dict:
+               *, retries: int = 1, sleep: Callable[[float], None] = time.sleep) -> dict:
     data = json.dumps(body).encode("utf-8") if body is not None else None
     attempt = 0
     while True:
@@ -58,21 +70,25 @@ def _http_json(method: str, url: str, headers: Dict[str, str], body: Optional[di
                 return json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as error:
             detail = error.read().decode("utf-8", "replace")
-            # Free tiers rate-limit by the minute: wait and retry. A used-up daily quota will not recover, so fail fast.
             daily = error.code == 429 and "PerDay" in detail
-            if error.code in (429, 500, 503) and attempt < retries and not daily:
+            busy = error.code in (429, 500, 503)
+            # One short wait covers a per-minute limit or a blip; a spent daily quota will not recover, so do not wait on it.
+            if busy and attempt < retries and not daily:
                 hinted = re.search(r'"retryDelay":\s*"(\d+(?:\.\d+)?)s"', detail)
                 try:
                     delay = float(hinted.group(1)) + 1 if hinted else float(error.headers.get("Retry-After") or 0)
                 except (TypeError, ValueError):
                     delay = 0.0
-                sleep(min(max(delay, 2.0 * 2 ** attempt), 45.0))
-                attempt += 1
-                continue
+                if delay <= 20:
+                    sleep(max(delay, 2.0))
+                    attempt += 1
+                    continue
             if daily:
-                raise ModelError("the model's free daily quota is used up; try again tomorrow") from error
-            raise ModelError(f"model API returned HTTP {error.code}: {detail[:400]}") from error
-        except (urllib.error.URLError, TimeoutError, ValueError) as error:
+                raise ModelError("the model's free daily quota is used up", error.code, busy=True) from error
+            raise ModelError(f"model API returned HTTP {error.code}: {detail[:400]}", error.code, busy=busy) from error
+        except (urllib.error.URLError, TimeoutError) as error:
+            raise ModelError(f"model API call failed: {error}", busy=True) from error
+        except ValueError as error:
             raise ModelError(f"model API call failed: {error}") from error
 
 
@@ -82,17 +98,27 @@ def _version_key(name: str):
 
 
 class GeminiModel:
-    """Gemini over REST. The API key is read from ``GEMINI_API_KEY`` (or ``GOOGLE_API_KEY``) and never logged."""
+    """Gemini over REST. The API key is read from ``GEMINI_API_KEY`` (or ``GOOGLE_API_KEY``) and never logged.
 
-    def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None, *, timeout: float = 60.0,
-                 http: Callable[..., dict] = _http_json):
+    Unless a model is pinned, the adapter keeps a short list of models the key can use and moves to the next one when
+    the current one is overloaded or out of quota. Each model has its own free quota, and a conversation started on one
+    continues on another (checked against the live API, thought signatures included).
+    """
+
+    SLOW_SECONDS = 12.0     # a model that takes longer than this for one request is treated as having a bad spell
+
+    def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None, *, timeout: float = 30.0,
+                 http: Callable[..., dict] = _http_json, clock: Callable[[], float] = time.monotonic):
         self._key = api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or ""
-        self._model = model or os.environ.get("GEMINI_MODEL") or ""
+        pinned = model or os.environ.get("GEMINI_MODEL") or ""
+        self._models: List[str] = [pinned] if pinned else []
+        self._current = 0
         self._timeout = timeout
         self._http = http
+        self._clock = clock
 
     def __repr__(self) -> str:
-        return f"GeminiModel(model={self._model or 'auto'!r}, key={'set' if self._key else 'missing'})"
+        return f"GeminiModel(model={(self._models[self._current] if self._models else 'auto')!r}, key={'set' if self._key else 'missing'})"
 
     @property
     def configured(self) -> bool:
@@ -100,32 +126,54 @@ class GeminiModel:
 
     @property
     def model(self) -> str:
-        if not self._model:
-            self._model = self._pick_model()
-        return self._model
+        """The model the next request will try first."""
+        if not self._models:
+            self._models = self._list_models()
+        return self._models[self._current]
 
     def _headers(self) -> Dict[str, str]:
         if not self._key:
             raise ModelError("GEMINI_API_KEY is not set")
         return {"x-goog-api-key": self._key, "Content-Type": "application/json"}
 
-    def _pick_model(self) -> str:
-        """Newest stable text model the key can use, so the app survives model retirements.
+    def _list_models(self) -> List[str]:
+        """Text models the key can use, in the order to try them, so the app survives retirements and busy spells.
 
-        ``flash-lite`` is preferred: on the free tier it allows hundreds of requests a day where ``flash`` allows twenty.
+        ``flash-lite`` comes first: on the free tier it allows hundreds of requests a day where ``flash`` allows twenty.
         """
         listing = self._http("GET", f"{GEMINI_BASE}/models?pageSize=200", self._headers(), None, self._timeout)
         names = [
             m["name"].split("/", 1)[-1] for m in listing.get("models", [])
             if "generateContent" in m.get("supportedGenerationMethods", [])
         ]
+        ordered: List[str] = []
         for pattern in (r"gemini-\d+(\.\d+)?-flash-lite", r"gemini-\d+(\.\d+)?-flash"):
-            matching = [n for n in names if re.fullmatch(pattern, n)]
-            if matching:
-                return max(matching, key=_version_key)
-        if not names:
+            ordered += sorted((n for n in names if re.fullmatch(pattern, n)), key=_version_key, reverse=True)[:2]
+        if not ordered and names:
+            ordered = [max(names, key=_version_key)]
+        if not ordered:
             raise ModelError("no model that supports generateContent is available to this key")
-        return max(names, key=_version_key)
+        return ordered
+
+    def _generate(self, body: dict) -> dict:
+        """Try the current model, then the others in order; stay on whichever one answered, unless it was slow."""
+        self.model                                # makes sure the list is loaded
+        last: Optional[ModelError] = None
+        for offset in range(len(self._models)):
+            index = (self._current + offset) % len(self._models)
+            url = f"{GEMINI_BASE}/models/{self._models[index]}:generateContent"
+            started = self._clock()
+            try:
+                reply = self._http("POST", url, self._headers(), body, self._timeout)
+            except ModelError as error:
+                if not error.busy:
+                    raise
+                last = error
+                continue
+            slow = self._clock() - started > self.SLOW_SECONDS
+            self._current = (index + 1) % len(self._models) if slow else index   # an answer, but start elsewhere next time
+            return reply
+        raise last if last else ModelError("no model is configured")
 
     @staticmethod
     def _contents(messages: Sequence[dict]) -> List[dict]:
@@ -158,7 +206,7 @@ class GeminiModel:
             body["tools"] = [{"functionDeclarations": [
                 {"name": t.name, "description": t.description, "parameters": _to_gemini_schema(t.parameters)} for t in tools
             ]}]
-        reply = self._http("POST", f"{GEMINI_BASE}/models/{self.model}:generateContent", self._headers(), body, self._timeout)
+        reply = self._generate(body)
         candidates = reply.get("candidates") or []
         if not candidates:
             reason = (reply.get("promptFeedback") or {}).get("blockReason")

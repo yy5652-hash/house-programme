@@ -111,7 +111,9 @@ def create_app(client: QlooClient = None, model=None, limiter: RateLimiter = Non
                         import logging
                         logging.getLogger("taste_mcp").exception("comparison failed")
                         events.put({"type": "comparison", "rows": [], "summary": None, "problem": "it failed unexpectedly"})
-            except (ModelError, QlooError) as error:
+            except ModelError as error:
+                events.put({"type": "error", "message": error.public})
+            except QlooError as error:
                 events.put({"type": "error", "message": str(error)[:300]})
             except Exception:  # keep details out of the browser; the server log has the traceback
                 import logging
