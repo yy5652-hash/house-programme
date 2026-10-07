@@ -99,6 +99,36 @@ def _invented_ids(arguments: dict, known: set) -> List[str]:
     return [i for key in _ID_ARGUMENTS for i in (arguments.get(key) or []) if i not in known]
 
 
+def _repair_arguments(arguments: dict) -> List[str]:
+    """Move ids that were put under the wrong argument, in place; returns a note per move.
+
+    The API does not reject an entity id passed as a tag signal: it answers with unrelated results at one flat
+    affinity (seen live). Each id kind is recognisable, so the mix-up is corrected instead of sent.
+    """
+    notes: List[str] = []
+
+    def kind_of(value: str) -> str:
+        return "tag" if value.startswith("urn:tag:") else "audience" if value.startswith("urn:audience:") else "entity"
+
+    homes = {"entity": "entity_ids", "tag": "tag_ids", "audience": "audience_ids"}
+    for argument, expects in (("entity_ids", "entity"), ("tag_ids", "tag"), ("audience_ids", "audience"), ("filter_tag_ids", "tag")):
+        values = arguments.get(argument)
+        if not isinstance(values, list):
+            continue
+        wrong = [v for v in values if isinstance(v, str) and kind_of(v) != expects]
+        if not wrong:
+            continue
+        arguments[argument] = [v for v in values if v not in wrong]
+        if not arguments[argument]:
+            del arguments[argument]
+        for value in wrong:
+            home = homes[kind_of(value)]
+            if home != argument and value not in arguments.setdefault(home, []):
+                arguments[home].append(value)
+        notes.append(f"{len(wrong)} id(s) under {argument} were {kind_of(wrong[0])} ids and were moved to {homes[kind_of(wrong[0])]}")
+    return notes
+
+
 def _is_reference(value: dict) -> bool:
     """Tags and audiences have names too, but they are not things a host can programme."""
     return str(value.get("id", "")).startswith(("urn:tag:", "urn:audience:"))
@@ -212,12 +242,15 @@ def run_brief(
         for call in calls:
             emit({"type": "call", "step": step + 1, "tool": call["name"], "args": call.get("args", {})})
             arguments = dict(call.get("args") or {})
+            repairs = _repair_arguments(arguments)
             invented = _invented_ids(arguments, known_ids)
             if invented:
                 outcome = {"ok": False, "error": f"these ids did not come from a tool result: {invented[:4]}. Look names up "
                                                  "with find_entities or find_tags first and use the ids they return."}
             else:
                 outcome = call_tool(client, call["name"], arguments)
+                if repairs:
+                    outcome["corrected"] = repairs
             _collect_evidence(outcome, evidence)
             _collect_ids(outcome, known_ids)
             result = outcome.get("result")
@@ -227,8 +260,10 @@ def run_brief(
             elif outcome.get("ok") and call["name"] == "bridge_tastes" and isinstance(result, dict):
                 used = [r.get("id") for r in (result.get("seeds") or {}).get("resolved", [])]
             signal_ids.extend(i for i in used if i and i not in signal_ids)
-            entry = {"step": step + 1, "tool": call["name"], "args": call.get("args", {}), "ok": bool(outcome.get("ok")),
-                     "error": outcome.get("error")}
+            entry = {"step": step + 1, "tool": call["name"], "args": arguments if repairs else call.get("args", {}),
+                     "ok": bool(outcome.get("ok")), "error": outcome.get("error")}
+            if repairs:
+                entry["corrected"] = repairs
             if isinstance(result, list):
                 entry["returned"] = len(result)
             elif isinstance(result, dict) and isinstance(result.get("picks"), list):

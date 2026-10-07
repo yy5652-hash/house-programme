@@ -125,6 +125,22 @@ class AgentLoopTests(unittest.TestCase):
         self.assertEqual([c["path"] for c in transport.calls], ["/search", "/v2/insights"])     # the bad call cost nothing
         self.assertEqual(result["seeds"], [{"id": "E-WES", "name": "Wes Anderson"}])              # and left no trace in the seeds
 
+    def test_entity_ids_passed_as_tag_signals_are_moved_to_the_right_argument(self):
+        client, transport = client_and_transport()
+        model = ScriptedModel([
+            {"text": None, "calls": [{"name": "find_entities", "args": {"names": ["Wes Anderson"]}}]},
+            {"text": None, "calls": [{"name": "recommend", "args": {"target_type": "place", "tag_ids": ["E-WES"]}}]},
+            final(["Pensão Amor"]),
+        ])
+        result = run_brief(model, client, "x")
+        sent = transport.calls[-1]["params"]
+        self.assertEqual(sent["signal.interests.entities"], "E-WES")
+        self.assertNotIn("signal.interests.tags", sent)
+        entry = result["trace"][1]
+        self.assertEqual(entry["args"], {"target_type": "place", "entity_ids": ["E-WES"]})
+        self.assertIn("were entity ids and were moved to entity_ids", entry["corrected"][0])
+        self.assertEqual(result["seeds"], [{"id": "E-WES", "name": "Wes Anderson"}])
+
     def test_tags_are_reference_data_not_things_to_programme(self):
         def tags_route(params):
             return 200, {}, {"results": {"tags": [{"id": "urn:tag:genre:place:record_store", "name": "Record store",
