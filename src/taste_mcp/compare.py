@@ -39,26 +39,29 @@ def compare(model: Any, client: QlooClient, request: str, result: dict, *, per_k
     """Return one row per unaided suggestion with a status:
 
     in_programme   the graph chose it too
-    scored         in the graph, with an affinity for this crowd (``affinity`` set)
+    scored         in the graph, with an affinity for this crowd (``affinity`` set; ``below_programme`` says whether
+                   that is weaker than every pick of the same kind in the programme)
     no_affinity    in the graph, but it returned no affinity for this crowd
     not_in_graph   the name could not be found
     unchecked      the lookup failed, or there were no resolved signals to score against
     """
     kinds: List[str] = []
     programme: Dict[str, Any] = {}
+    floors: Dict[str, float] = {}       # weakest affinity among the programme's picks, per kind
     for section in result["brief"].get("sections") or []:
         kind = section.get("kind")
         if kind in ENTITY_KINDS and kind not in kinds:
             kinds.append(kind)
         for pick in section.get("picks") or []:
-            programme[str(pick.get("name", "")).lower()] = pick.get("affinity")
+            affinity = pick.get("affinity")
+            programme[str(pick.get("name", "")).lower()] = affinity
+            if isinstance(affinity, (int, float)):
+                floors[kind] = min(affinity, floors.get(kind, affinity))
     kinds = kinds[:max_kinds]
     if not kinds:
         return {"rows": [], "summary": None}
 
     seed_ids = [seed["id"] for seed in result.get("seeds") or [] if seed.get("id")]
-    affinities = [a for a in programme.values() if isinstance(a, (int, float))]
-    floor = min(affinities) if affinities else None
     picks = unaided_picks(model, request, kinds, per_kind)
     rows: List[dict] = []
     problem = None
@@ -95,14 +98,16 @@ def compare(model: Any, client: QlooClient, request: str, result: dict, *, per_k
                 row["status"] = "unchecked"
             elif isinstance(scored.get(hit.get("id")), (int, float)):
                 row["status"], row["affinity"] = "scored", scored[hit["id"]]
+                if kind in floors:
+                    row["below_programme"] = row["affinity"] < floors[kind]
             else:
                 row["status"] = "no_affinity"
             rows.append(row)
 
     counts = {status: sum(1 for r in rows if r["status"] == status)
               for status in ("in_programme", "scored", "no_affinity", "not_in_graph", "unchecked")}
-    below = sum(1 for r in rows if r["status"] == "scored" and floor is not None and r["affinity"] < floor)
-    out = {"rows": rows, "summary": {"suggested": len(rows), **counts, "scored_below_programme": below, "programme_floor": floor}}
+    below = sum(1 for r in rows if r.get("below_programme"))
+    out = {"rows": rows, "summary": {"suggested": len(rows), **counts, "scored_below_programme": below, "programme_floors": floors}}
     if problem:
         out["problem"] = problem
     return out

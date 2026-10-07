@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 import urllib.error
 import urllib.parse
@@ -197,35 +198,137 @@ class QlooClient:
 
 
 # -- response shaping --------------------------------------------------------------------------
-def _short_tag(tag: Any) -> str:
+# An entity carries dozens to hundreds of tags. These tag families describe what a thing is like; the rest
+# (plot keywords, instruments, nearby attractions, payment options ...) are noise on a programme card.
+_TAG_FAMILIES = ("genre", "subgenre", "category", "style", "theme", "ambience", "plot", "critical_descriptor",
+                 "emotional_tone", "lifestyle", "aesthetic_property", "cuisine", "setting", "decor")
+
+
+def _tag_name(tag: Any) -> str:
     if isinstance(tag, Mapping):
         return str(tag.get("name") or tag.get("id") or tag.get("tag_id") or "")
     return str(tag).split(":")[-1].replace("_", " ")
 
 
+def _tag_family(tag: Any) -> str:
+    raw = (tag.get("type") or tag.get("id") or tag.get("tag_id") or "") if isinstance(tag, Mapping) else str(tag)
+    parts = raw.split(":")
+    return parts[2] if len(parts) > 2 else ""
+
+
+def _pick_tags(tags: Any, limit: int) -> list:
+    """Up to ``limit`` distinct tag names, descriptive families first, original order within a family."""
+    ranked = sorted(enumerate(tags or []), key=lambda pair: (
+        _TAG_FAMILIES.index(_tag_family(pair[1])) if _tag_family(pair[1]) in _TAG_FAMILIES else len(_TAG_FAMILIES), pair[0]))
+    names, seen = [], set()
+    for _, tag in ranked:
+        name = _tag_name(tag)
+        if name and name.lower() not in seen and name.lower() not in _DULL_TAGS:
+            seen.add(name.lower())
+            names.append(name)
+        if len(names) == limit:
+            break
+    return names
+
+
+def _kind_and_subtype(entity: Mapping[str, Any]) -> tuple:
+    """Insights results say ``type: urn:entity`` and put the kind in ``subtype``; search results use ``types``."""
+    for raw in (entity.get("subtype"), entity.get("type"), *(entity.get("types") or [])):
+        if isinstance(raw, str) and raw.startswith("urn:entity:"):
+            parts = raw.split(":")
+            return parts[2], (parts[3] if len(parts) > 3 else None)
+    return None, None
+
+
+def _drivers(explainability: Any) -> list:
+    """Which signals pulled this entity up, strongest first.
+
+    Live shape: ``{"signal.interests.entities": [{"entity_id": ..., "score": ...}], "signal.interests.tags": [...]}``.
+    A flat ``{id: score}`` mapping is accepted as well.
+    """
+    found = []
+    if isinstance(explainability, Mapping):
+        for key, value in explainability.items():
+            if isinstance(value, (int, float)):
+                found.append((key, float(value)))
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, Mapping) and isinstance(item.get("score"), (int, float)):
+                        signal = item.get("entity_id") or item.get("tag_id") or item.get("id")
+                        if signal:
+                            found.append((signal, float(item["score"])))
+    found.sort(key=lambda pair: -pair[1])
+    return [{"signal": signal, "impact": round(score, 3)} for signal, score in found[:5]]
+
+
+# Tags that say nothing on a card.
+_DULL_TAGS = {"place", "shopping", "food", "establishment", "point of interest", "store", "podcasts"}
+
+# The image urls point at originals (posters of 8000 x 12000 pixels exist). Each host has its own way to ask for a small one.
+_THUMBNAIL_RULES = (
+    (re.compile(r"^(https://lastfm\.freetls\.fastly\.net/i/u/)[^/]+(/.+)$"), r"\g<1>174s\g<2>"),
+    (re.compile(r"^(https://m\.media-amazon\.com/images/.+\._V1_)(\.\w+)$"), r"\g<1>UX128_\g<2>"),
+    (re.compile(r"^(https://images-na\.ssl-images-amazon\.com/images/S/compressed\.photo\.goodreads\.com/.+/\d+)(\.\w+)$"),
+     r"\g<1>._SX98_\g<2>"),
+    (re.compile(r"^(https://lh\d\.googleusercontent\.com/.+=)w\d+-h\d+(.*)$"), r"\g<1>w160-h160\g<2>"),
+)
+
+
+def thumbnail(url: Optional[str]) -> Optional[str]:
+    """A small version of a known image url; unknown hosts are returned unchanged."""
+    if not url:
+        return None
+    for pattern, replacement in _THUMBNAIL_RULES:
+        if pattern.match(url):
+            return pattern.sub(replacement, url)
+    return url
+
+
+def _english(values: Any) -> str:
+    for item in values or []:
+        if isinstance(item, Mapping) and item.get("value") and "en" in (item.get("languages") or ["en"]):
+            return str(item["value"])
+    return ""
+
+
 def summarize_entity(entity: Mapping[str, Any], max_tags: int = 6) -> dict:
-    """Reduce one API entity to the fields an agent needs to cite it."""
+    """Reduce one API entity to the fields an agent needs to cite it and a page needs to show it."""
     properties = entity.get("properties") or {}
     geocode = properties.get("geocode") or {}
     query = entity.get("query") or {}
-    description = (properties.get("description") or properties.get("short_description") or "").strip()
+    kind, subtype = _kind_and_subtype(entity)
+    description = (_english(properties.get("short_descriptions")) or properties.get("description")
+                   or properties.get("short_description") or "").strip()
+    image = (properties.get("image") or {}).get("url") if isinstance(properties.get("image"), Mapping) else None
+    if not image:
+        image = next((i.get("url") for i in properties.get("images") or [] if isinstance(i, Mapping) and i.get("url")), None)
+    affinity = query.get("affinity")
+    place_parts = (properties.get("neighborhood"), geocode.get("city") or geocode.get("name"),
+                   geocode.get("admin1_region"), geocode.get("country_code"))
+    where, seen = [], set()
+    for part in place_parts:
+        if part and str(part).lower() not in seen:
+            seen.add(str(part).lower())
+            where.append(str(part))
+    rating = properties.get("business_rating")
     summary = {
         "id": entity.get("entity_id") or entity.get("id"),
         "name": entity.get("name"),
-        "type": (entity.get("type") or (entity.get("types") or [None])[0] or "").split(":")[-1] or None,
-        "subtype": (entity.get("subtype") or "").split(":")[-1] or None,
-        "affinity": query.get("affinity"),
+        "type": kind,
+        "subtype": subtype,
+        "affinity": round(affinity, 3) if isinstance(affinity, (int, float)) else None,
         "popularity": entity.get("popularity", properties.get("popularity")),
-        "where": ", ".join(p for p in (geocode.get("name"), geocode.get("admin1_region"), geocode.get("country_code")) if p) or None,
-        "tags": [t for t in (_short_tag(t) for t in (entity.get("tags") or [])[:max_tags]) if t],
+        "detail": (entity.get("disambiguation") or "").strip() or None,
+        "where": ", ".join(where) or None,
+        "city": geocode.get("city"),
+        "tags": _pick_tags(entity.get("tags"), max_tags),
         "description": (description[:240] + "…") if len(description) > 240 else (description or None),
+        "image": image,
+        "thumb": thumbnail(image),
+        "website": properties.get("website"),
+        "rating": round(rating, 1) if isinstance(rating, (int, float)) else None,
+        "drivers": _drivers(query.get("explainability")),
     }
-    drivers = query.get("explainability")
-    if isinstance(drivers, Mapping) and drivers:
-        ranked = sorted(((k, v) for k, v in drivers.items() if isinstance(v, (int, float))), key=lambda kv: -kv[1])
-        summary["drivers"] = [{"signal": k, "impact": round(v, 3)} for k, v in ranked[:5]]
-    elif isinstance(drivers, list) and drivers:
-        summary["drivers"] = drivers[:5]
     return {k: v for k, v in summary.items() if v not in (None, [], "")}
 
 
@@ -233,3 +336,15 @@ def summarize_entities(response: Mapping[str, Any], max_tags: int = 6) -> list:
     results = response.get("results") or {}
     entities = results.get("entities") if isinstance(results, Mapping) else results
     return [summarize_entity(e, max_tags) for e in (entities or [])]
+
+
+def summarize_tags(response: Mapping[str, Any]) -> list:
+    tags = (response.get("results") or {}).get("tags") or []
+    return [{"id": t.get("id"), "name": t.get("name"), "family": _tag_family(t),
+             "applies_to": [str(p.get("type", "")).split(":")[-1] for p in t.get("parents") or []][:3]}
+            for t in tags if isinstance(t, Mapping) and t.get("id")]
+
+
+def summarize_audiences(response: Mapping[str, Any]) -> list:
+    audiences = (response.get("results") or {}).get("audiences") or []
+    return [{"id": a.get("id"), "name": a.get("name")} for a in audiences if isinstance(a, Mapping) and a.get("id")]

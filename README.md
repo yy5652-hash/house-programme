@@ -9,9 +9,8 @@ the crowd's favourites drove it.
 
 Built for the Qloo Agentic Hackathon.
 
-**Status (5 October 2026):** work in progress. The agent loop has been run end to end with a real model against sample
-taste data. The Qloo client follows the published API reference and is covered by offline tests; it has not yet been
-run against the live Qloo API, because the hackathon key has not arrived.
+**Live demo:** https://house-programme.onrender.com/ (free instance: the first request after a quiet spell takes
+about a minute to wake it).
 
 ## What is in here
 
@@ -54,6 +53,8 @@ programme costs about three model requests, and on the free tier `flash-lite` al
 
 No keys yet? `scripts/dev_fake.py` serves the page against canned sample data on port 7861. With a model key but no
 Qloo key, `scripts/live_model_check.py` runs the real model through the whole loop against that same sample data.
+With both keys, `scripts/live_run.py` prints one full programme and its second opinion, `scripts/live_qloo_probe.py`
+prints the live response shapes, and `scripts/dev_live.py` serves the real app on port 7862.
 
 Tests are offline and need no keys:
 
@@ -72,6 +73,18 @@ Tests are offline and need no keys:
 ```
 
 Tools: `find_entities`, `find_tags`, `list_audiences`, `recommend`, `bridge_tastes`, `score_candidates`.
+
+`bridge_tastes` needs no ids: give it names, a kind, and for places a city and a venue category in plain words
+("record store", "bookstore"). It resolves the names and the category tag itself and reports what it resolved them to.
+
+## What the live API taught this code
+
+- A city name is read as its wider region: asking for places in Lisbon also returns the coast an hour away, and a
+  radius does not change that. Place results are therefore checked against each place's own address fields.
+- A city alone returns every kind of venue, so place lookups carry a category tag (`filter.tags`).
+- Models make up ids when they skip a lookup. A call whose ids no tool has returned is refused before it reaches the API.
+- Image urls point at originals, some of them thousands of pixels wide; the page asks each host for a thumbnail.
+- `filter.results.entities` scores named candidates for an audience, which is what makes the second opinion possible.
 
 ## Deploy
 

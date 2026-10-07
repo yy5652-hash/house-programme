@@ -23,6 +23,14 @@ How to work:
    (movie), a book for the club (book), a podcast to sponsor or play (podcast), brands to stock or partner with
    (brand) and, when a city is given, nearby places to cross-promote with (place). Choose the kinds that fit the request.
    Ask for all of those kinds in the same turn: issue the tool calls together rather than one per turn.
+   Use all of the crowd's favourites together as the signals for every kind, not one favourite per kind: what the
+   same people love across domains is exactly what the graph knows and a single-domain lookup does not.
+   For places, a city alone returns every kind of venue (hotels, surf schools, shops). Decide which two or three
+   kinds of neighbour would suit this host (record store, bookstore, movie theater, art gallery, cafe, wine bar, live
+   music venue ...) and make one bridge_tastes call per kind with city and category.
+   Names that came back from the taste graph are already verified; do not look them up again.
+   Never make up an id. An id is only valid if a tool returned it earlier in this conversation; a call that needs
+   ids you do not have yet has to wait for the next turn. bridge_tastes takes names, so it can go in the first turn.
 3. Use only names that came back from a tool. Never add a pick from memory. If the graph returns nothing for a kind,
    say so in caveats instead of filling the gap.
 4. When a seed could not be resolved or resolved to the wrong thing, say so in caveats.
@@ -33,7 +41,9 @@ Finish with JSON only, no prose around it:
  "sections": [{"title": "short heading", "kind": "artist|movie|book|podcast|brand|place|tv_show|video_game|destination",
                "picks": [{"name": "exact name from a tool result", "why": "one sentence, concrete, mentions the driver"}]}],
  "caveats": ["anything unresolved, thin or uncertain"]}
-Keep to at most four picks per section."""
+Give three or four picks per section when the graph returned that many, and include every kind that fits the request
+and returned results. Section titles are plain headings a host would use ("On the speakers",
+"Film night", "Book club", "Neighbours to team up with"), without the kind in brackets."""
 
 Event = Dict[str, Any]
 
@@ -54,14 +64,51 @@ def _compact(value: Any, limit: int = 6000) -> Any:
     return {"ok": value.get("ok", True) if isinstance(value, dict) else True, "truncated": True, "preview": text[:limit]}
 
 
+_NOT_FOR_THE_MODEL = {"image", "thumb", "website", "popularity", "alternatives", "city"}
+
+
+def _slim(value: Any) -> Any:
+    """Drop fields the page needs but the model does not, before a tool result goes back into the conversation."""
+    if isinstance(value, dict):
+        return {k: _slim(v) for k, v in value.items() if k not in _NOT_FOR_THE_MODEL}
+    if isinstance(value, list):
+        return [_slim(v) for v in value]
+    return value
+
+
+_ID_ARGUMENTS = ("entity_ids", "candidate_ids", "tag_ids", "filter_tag_ids", "audience_ids")
+
+
+def _collect_ids(value: Any, into: set) -> None:
+    """Remember every id a tool has returned, so later calls can be checked against them."""
+    if isinstance(value, dict):
+        if isinstance(value.get("id"), str):
+            into.add(value["id"])
+        for item in value.values():
+            _collect_ids(item, into)
+    elif isinstance(value, list):
+        for item in value:
+            _collect_ids(item, into)
+
+
+def _invented_ids(arguments: dict, known: set) -> List[str]:
+    """Ids in a call that no tool has returned. Models sometimes make ids up when they skip the lookup."""
+    return [i for key in _ID_ARGUMENTS for i in (arguments.get(key) or []) if i not in known]
+
+
+def _is_reference(value: dict) -> bool:
+    """Tags and audiences have names too, but they are not things a host can programme."""
+    return str(value.get("id", "")).startswith(("urn:tag:", "urn:audience:"))
+
+
 def _collect_evidence(value: Any, into: Dict[str, dict]) -> None:
     """Index every named entity in a tool result by lower-cased name."""
     if isinstance(value, dict):
         name = value.get("name")
-        if isinstance(name, str) and name.strip() and ("id" in value or "affinity" in value):
+        if isinstance(name, str) and name.strip() and ("id" in value or "affinity" in value) and not _is_reference(value):
             key = name.strip().lower()
             known = into.setdefault(key, {"name": name.strip()})
-            for field in ("id", "type", "affinity", "popularity", "where", "tags", "drivers"):
+            for field in ("id", "type", "affinity", "popularity", "where", "tags", "drivers", "detail", "image", "thumb", "website", "rating"):
                 if value.get(field) is not None and field not in known:
                     known[field] = value[field]
         for item in value.values():
@@ -84,7 +131,7 @@ def _ground(brief: dict, evidence: Dict[str, dict]) -> dict:
             if not proof:
                 dropped.append({"name": name, "section": section.get("title")})
                 continue
-            extra = {k: proof[k] for k in ("id", "affinity", "where", "tags") if k in proof}
+            extra = {k: proof[k] for k in ("id", "affinity", "where", "tags", "detail", "image", "thumb", "website", "rating") if k in proof}
             drivers = [  # show the seed's name, not its id; drop drivers that cannot be named
                 {**d, "name": d.get("name") or names_by_id.get(d.get("signal"))}
                 for d in proof.get("drivers", []) if isinstance(d, dict)
@@ -115,6 +162,7 @@ def run_brief(
     trace: List[dict] = []
     evidence: Dict[str, dict] = {}
     signal_ids: List[str] = []          # entity ids the run used as audience signals
+    known_ids: set = set()              # every id a tool has returned so far
     final_text: Optional[str] = None
 
     for step in range(max_steps):
@@ -130,11 +178,20 @@ def run_brief(
         results = []
         for call in calls:
             emit({"type": "call", "step": step + 1, "tool": call["name"], "args": call.get("args", {})})
-            outcome = call_tool(client, call["name"], dict(call.get("args") or {}))
+            arguments = dict(call.get("args") or {})
+            invented = _invented_ids(arguments, known_ids)
+            if invented:
+                outcome = {"ok": False, "error": f"these ids did not come from a tool result: {invented[:4]}. Look names up "
+                                                 "with find_entities or find_tags first and use the ids they return."}
+            else:
+                outcome = call_tool(client, call["name"], arguments)
             _collect_evidence(outcome, evidence)
+            _collect_ids(outcome, known_ids)
             result = outcome.get("result")
-            used = list((call.get("args") or {}).get("entity_ids") or []) if call["name"] in ("recommend", "score_candidates") else []
-            if call["name"] == "bridge_tastes" and isinstance(result, dict):
+            used: List[str] = []
+            if outcome.get("ok") and call["name"] in ("recommend", "score_candidates"):
+                used = list(arguments.get("entity_ids") or [])
+            elif outcome.get("ok") and call["name"] == "bridge_tastes" and isinstance(result, dict):
                 used = [r.get("id") for r in (result.get("seeds") or {}).get("resolved", [])]
             signal_ids.extend(i for i in used if i and i not in signal_ids)
             entry = {"step": step + 1, "tool": call["name"], "args": call.get("args", {}), "ok": bool(outcome.get("ok")),
@@ -145,7 +202,7 @@ def run_brief(
                 entry["returned"] = len(result["picks"])
             trace.append(entry)
             emit({"type": "result", **entry})
-            results.append({"name": call["name"], "response": _compact(outcome)})
+            results.append({"name": call["name"], "response": _compact(_slim(outcome))})
         messages.append({"role": "tool", "results": results})
     else:
         # Out of steps: ask once more for the answer with tools switched off.

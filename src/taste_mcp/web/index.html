@@ -47,6 +47,11 @@
   section { border-top: 2px solid var(--ink); padding-top: 12px; margin-top: 26px; }
   section h3 { font: 600 12px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; margin: 0 0 12px; }
   .pick { display: grid; grid-template-columns: 1fr 132px; gap: 6px 16px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .pick.art { grid-template-columns: 64px 1fr 132px; }
+  .pick.art .why, .pick.art .tags { grid-column: 2 / -1; }
+  .thumb { grid-row: span 3; width: 64px; height: 88px; object-fit: cover; border-radius: 6px; background: var(--bar); }
+  .thumb.wide { height: 64px; }
+  .name a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
   .pick:last-child { border-bottom: 0; }
   .name { font: 600 19px/1.25 var(--serif); }
   .where { color: var(--muted); font-size: 14px; }
@@ -68,7 +73,11 @@
   .pending { font: 13px var(--mono); color: var(--muted); margin-top: 26px; }
   footer { margin-top: 44px; color: var(--muted); font-size: 13px; }
   footer a { color: inherit; }
-  @media (max-width: 520px) { .pick, .second .pick { grid-template-columns: 1fr; } .meter, .second .verdict { text-align: left; } .go { width: 100%; margin-left: 0; } }
+  @media (max-width: 520px) {
+    .pick, .second .pick { grid-template-columns: 1fr; } .pick.art { grid-template-columns: 56px 1fr; }
+    .pick.art .meter, .pick.art .why, .pick.art .tags { grid-column: 2; } .thumb { width: 56px; height: 76px; grid-row: span 4; }
+    .meter, .second .verdict { text-align: left; } .go { width: 100%; margin-left: 0; }
+  }
 </style>
 </head>
 <body>
@@ -134,13 +143,23 @@ function renderProgramme(data) {
     const block = el("section", {}, el("h3", {}, section.title || section.kind || ""));
     for (const pick of section.picks || []) {
       const pct = typeof pick.affinity === "number" ? Math.round(Math.max(0, Math.min(1, pick.affinity)) * 100) : null;
-      const row = el("div", { class: "pick" },
-        el("div", {}, el("div", { class: "name" }, pick.name), pick.where ? el("div", { class: "where" }, pick.where) : null),
+      const safe = (u) => typeof u === "string" && /^https?:\/\//i.test(u) ? u : null;
+      const isPlace = section.kind === "place" || section.kind === "destination";
+      const image = safe(pick.thumb) || safe(pick.image), site = isPlace ? safe(pick.website) : null;
+      const detail = pick.detail && pick.detail.toLowerCase() !== String(pick.name).toLowerCase() ? pick.detail : null;
+      const sub = [isPlace ? pick.where : detail, isPlace && pick.rating ? "rated " + pick.rating : null].filter(Boolean).join(" · ");
+      const thumb = image ? el("img", { class: "thumb" + (isPlace ? " wide" : ""), src: image, alt: "", loading: "lazy", referrerpolicy: "no-referrer" }) : null;
+      if (thumb) thumb.addEventListener("error", () => { thumb.closest(".pick").classList.remove("art"); thumb.remove(); });
+      const row = el("div", { class: "pick" + (thumb ? " art" : "") }, thumb,
+        el("div", {}, el("div", { class: "name" }, site ? el("a", { href: site, target: "_blank", rel: "noopener noreferrer" }, pick.name) : pick.name),
+          sub ? el("div", { class: "where" }, sub) : null),
         pct == null ? el("div", { class: "meter" }, "in graph") :
           el("div", { class: "meter" }, `affinity ${pct}%`, el("div", { class: "bar" }, el("i", { style: `width:${pct}%` }))),
         el("p", { class: "why" }, pick.why || ""));
       const tags = el("div", { class: "tags" });
-      for (const d of (pick.drivers || []).slice(0, 3)) if (d && (d.name || d.signal)) tags.append(el("span", { class: "tag driver" }, "because of " + (d.name || d.signal)));
+      const drivers = (pick.drivers || []).filter((d) => d && d.name).slice(0, 2);
+      if (drivers.length) tags.append(el("span", { class: "tag driver" }, "driven by " + drivers.map((d) =>
+        d.name + (typeof d.impact === "number" && d.impact <= 1 ? " " + Math.round(d.impact * 100) + "%" : "")).join(" · ")));
       for (const t of (pick.tags || []).slice(0, 4)) tags.append(el("span", { class: "tag" }, t));
       if (tags.childElementCount) row.append(tags);
       block.append(row);
@@ -164,18 +183,18 @@ function renderComparison(data) {
   if (!rows.length) { if (data.problem) result.append(el("p", { class: "pending" }, "The unaided comparison could not be run: " + data.problem)); return; }
   const pct = (a) => Math.round(Math.max(0, Math.min(1, a)) * 100) + "%";
   const block = el("section", { class: "second" }, el("h3", {}, "Second opinion: the model on its own"));
-  const parts = [`Asked the same question with no taste graph, the model suggested ${s.suggested} things.`,
-    `${s.in_programme} are in your programme.`];
-  if (s.scored) parts.push(`${s.scored} more are in the graph with a measurable tie to this crowd` +
-    (s.programme_floor != null ? ` (${s.scored_below_programme} of them weaker than anything in the programme).` : "."));
-  if (s.no_affinity) parts.push(`${s.no_affinity} are in the graph but show no tie to this crowd.`);
-  if (s.not_in_graph) parts.push(`${s.not_in_graph} could not be found in the graph.`);
-  if (s.unchecked) parts.push(`${s.unchecked} could not be checked.`);
+  const n = (count, one, many) => `${count} ${count === 1 ? one : many}`;
+  const parts = [`Asked the same question with no taste graph, the model suggested ${n(s.suggested, "thing", "things")}.`,
+    s.in_programme ? `${n(s.in_programme, "is", "are")} in your programme.` : "None of them is in your programme."];
+  if (s.scored) parts.push(`${n(s.scored, "other is", "others are")} in the graph with a measurable tie to this crowd` +
+    (s.scored_below_programme ? `, ${s.scored_below_programme === s.scored ? (s.scored === 1 ? "but" : "all") : s.scored_below_programme + " of them"} weaker than every pick of that kind in the programme.` : "."));
+  if (s.no_affinity) parts.push(`${n(s.no_affinity, "is", "are")} in the graph but ${s.no_affinity === 1 ? "shows" : "show"} no tie to this crowd.`);
+  if (s.not_in_graph) parts.push(`${n(s.not_in_graph, "was", "were")} not found in the graph at all.`);
+  if (s.unchecked) parts.push(`${n(s.unchecked, "one", "of them")} could not be checked.`);
   block.append(el("p", { class: "lead" }, parts.join(" ")));
   const verdicts = {
     in_programme: (r) => ["same", "the taste graph chose it too" + (typeof r.affinity === "number" ? " · " + pct(r.affinity) : "")],
-    scored: (r) => [s.programme_floor != null && r.affinity < s.programme_floor ? "off" : "", "affinity " + pct(r.affinity) +
-      (s.programme_floor != null && r.affinity < s.programme_floor ? " · below your programme" : "")],
+    scored: (r) => [r.below_programme ? "off" : "", "affinity " + pct(r.affinity) + (r.below_programme ? " · below your programme" : "")],
     no_affinity: () => ["off", "in the graph, no tie to this crowd"],
     not_in_graph: () => ["off", "not found in the taste graph"],
     unchecked: () => ["", "could not be checked"],

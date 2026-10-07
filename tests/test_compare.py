@@ -55,11 +55,12 @@ class CompareTests(unittest.TestCase):
         by_name = {row["name"]: row for row in out["rows"]}
         self.assertEqual(by_name["Pensao Amor"], {"kind": "place", "name": "Pensao Amor", "resolved_as": "Pensão Amor",
                                                   "status": "in_programme", "affinity": 0.93})
-        self.assertEqual(by_name["Bar A"], {"kind": "place", "name": "Bar A", "status": "scored", "affinity": 0.41})
+        self.assertEqual(by_name["Bar A"], {"kind": "place", "name": "Bar A", "status": "scored", "affinity": 0.41,
+                                            "below_programme": True})
         self.assertEqual(by_name["Bar B"]["status"], "no_affinity")
         self.assertEqual(by_name["Ghost Bar"]["status"], "not_in_graph")
         self.assertEqual(out["summary"], {"suggested": 4, "in_programme": 1, "scored": 1, "no_affinity": 1, "not_in_graph": 1,
-                                          "unchecked": 0, "scored_below_programme": 1, "programme_floor": 0.93})
+                                          "unchecked": 0, "scored_below_programme": 1, "programme_floors": {"place": 0.93}})
         scoring = [c for c in transport.calls if "filter.results.entities" in c["params"]][0]["params"]
         self.assertEqual(scoring["signal.interests.entities"], "E-WES")
         self.assertEqual(scoring["filter.results.entities"], "P-1,P-2,P-3")

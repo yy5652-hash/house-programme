@@ -9,8 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List
 
-from .qloo import QlooClient, summarize_entities
-from .tools import resolve_entities, safe_call, taste_bridge
+from .qloo import QlooClient, summarize_audiences, summarize_entities, summarize_tags
+from .tools import in_city, resolve_entities, safe_call, taste_bridge
 
 ENTITY_KINDS = ["artist", "book", "brand", "destination", "movie", "person", "place", "podcast", "tv_show", "video_game"]
 AUDIENCE_CATEGORIES = [
@@ -45,6 +45,15 @@ def score_candidates(client: QlooClient, target_type: str, entity_ids: List[str]
     return summarize_entities(response)
 
 
+def _recommend(client: QlooClient, target_type, entity_ids, tag_ids, audience_ids, city, filter_tag_ids, take: int) -> list:
+    local_only = bool(city) and target_type == "place"
+    picks = summarize_entities(client.insights(
+        target_type, entities=entity_ids, tags=tag_ids, audiences=audience_ids, location_query=city,
+        take=min(take * 4, 50) if local_only else take,
+        extra={"filter.tags": filter_tag_ids} if filter_tag_ids else None))
+    return in_city(picks, city, take)["picks"] if local_only else picks
+
+
 TOOLS: List[Tool] = [
     Tool(
         "find_entities",
@@ -59,12 +68,13 @@ TOOLS: List[Tool] = [
     ),
     Tool(
         "find_tags",
-        "Search taste-graph tags such as genres, cuisines, styles and amenities. Returns tag ids for use as signals.",
+        "Search taste-graph tags such as genres, cuisines, styles and venue categories. Returns tag ids to use as "
+        "signals (tag_ids) or to narrow results (filter_tag_ids); applies_to says which kinds a tag belongs to.",
         {"type": "object", "properties": {
             "query": {"type": "string", "description": "Word or phrase, e.g. 'natural wine' or 'shoegaze'."},
             "take": {"type": "integer", "description": "How many tags to return (default 10)."},
         }, "required": ["query"]},
-        lambda client, query, take=10: client.tags(query, take=int(take)),
+        lambda client, query, take=10: summarize_tags(client.tags(query, take=int(take))),
     ),
     Tool(
         "list_audiences",
@@ -73,36 +83,40 @@ TOOLS: List[Tool] = [
             "category": {"type": "string", "enum": AUDIENCE_CATEGORIES},
             "take": {"type": "integer"},
         }, "required": ["category"]},
-        lambda client, category, take=50: client.audiences([f"urn:audience:{category}"], take=int(take)),
+        lambda client, category, take=50: summarize_audiences(client.audiences([f"urn:audience:{category}"], take=int(take))),
     ),
     Tool(
         "recommend",
         "Taste-ranked entities of one kind for resolved signals. Each result carries an affinity score and, when "
-        "entity or tag signals are given, which signal drove it. Use city to restrict places and destinations.",
+        "entity or tag signals are given, which signal drove it. Use city to restrict places and destinations, and "
+        "filter_tag_ids to keep only results of one category (a city alone returns every kind of venue).",
         {"type": "object", "properties": {
             "target_type": {"type": "string", "enum": ENTITY_KINDS},
             "entity_ids": _strings("Entity ids from find_entities."),
-            "tag_ids": _strings("Tag ids from find_tags."),
+            "tag_ids": _strings("Tag ids from find_tags, used as taste signals."),
             "audience_ids": _strings("Audience ids from list_audiences."),
             "city": {"type": "string", "description": "City or locality name, for places only."},
+            "filter_tag_ids": _strings("Tag ids every result must carry, e.g. a venue category."),
             "take": {"type": "integer", "description": "How many results (default 8, max 50)."},
         }, "required": ["target_type"]},
-        lambda client, target_type, entity_ids=None, tag_ids=None, audience_ids=None, city=None, take=8:
-            summarize_entities(client.insights(target_type, entities=entity_ids, tags=tag_ids,
-                                               audiences=audience_ids, location_query=city, take=int(take))),
+        lambda client, target_type, entity_ids=None, tag_ids=None, audience_ids=None, city=None, filter_tag_ids=None, take=8:
+            _recommend(client, target_type, entity_ids, tag_ids, audience_ids, city, filter_tag_ids, int(take)),
     ),
     Tool(
         "bridge_tastes",
-        "Shortcut: resolve free-text seeds and recommend one kind of thing in a single call. Shows what each seed "
-        "resolved to and the per-seed impact on every pick.",
+        "Shortcut that needs no ids: resolve free-text seeds and recommend one kind of thing in a single call. Shows "
+        "what each seed resolved to and the per-seed impact on every pick. For places give the city and a category; "
+        "results outside the city are dropped.",
         {"type": "object", "properties": {
             "seeds": _strings("Things the audience already loves, by name."),
             "target_type": {"type": "string", "enum": ENTITY_KINDS},
-            "city": {"type": "string"},
+            "city": {"type": "string", "description": "City name, for places."},
+            "category": {"type": "string", "description": "Kind of venue to keep, in plain words: record store, bookstore, "
+                                                          "movie theater, art gallery, cafe, wine bar, live music venue. Places only."},
             "take": {"type": "integer"},
         }, "required": ["seeds", "target_type"]},
-        lambda client, seeds, target_type, city=None, take=8:
-            taste_bridge(client, seeds, target_type, city=city, take=int(take)),
+        lambda client, seeds, target_type, city=None, category=None, take=8:
+            taste_bridge(client, seeds, target_type, city=city, category=category, take=int(take)),
     ),
     Tool(
         "score_candidates",

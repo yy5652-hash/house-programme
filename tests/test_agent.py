@@ -106,6 +106,39 @@ class AgentLoopTests(unittest.TestCase):
         # E-WES was resolved earlier so it gets its name; E-PHOEBE was never resolved and is left out
         self.assertEqual(pick["drivers"], [{"signal": "E-WES", "impact": 0.7, "name": "Wes Anderson"}])
 
+    def test_ids_the_tools_never_returned_are_refused_before_reaching_the_api(self):
+        client, transport = client_and_transport()
+        model = ScriptedModel([
+            {"text": None, "calls": [{"name": "recommend", "args": {"target_type": "place", "entity_ids": ["MADE-UP-1"],
+                                                                     "filter_tag_ids": ["tag_123"]}}]},
+            {"text": None, "calls": [{"name": "find_entities", "args": {"names": ["Wes Anderson"]}}]},
+            {"text": None, "calls": [{"name": "recommend", "args": {"target_type": "place", "entity_ids": ["E-WES"]}}]},
+            final(["Pensão Amor"]),
+        ])
+        result = run_brief(model, client, "x")
+        self.assertEqual([t["ok"] for t in result["trace"]], [False, True, True])
+        self.assertIn("did not come from a tool result", result["trace"][0]["error"])
+        self.assertIn("MADE-UP-1", result["trace"][0]["error"])
+        self.assertEqual([c["path"] for c in transport.calls], ["/search", "/v2/insights"])     # the bad call cost nothing
+        self.assertEqual(result["seeds"], [{"id": "E-WES", "name": "Wes Anderson"}])              # and left no trace in the seeds
+
+    def test_tags_are_reference_data_not_things_to_programme(self):
+        def tags_route(params):
+            return 200, {}, {"results": {"tags": [{"id": "urn:tag:genre:place:record_store", "name": "Record store",
+                                                   "type": "urn:tag:genre:place", "parents": [{"type": "urn:entity:place"}]}]}}
+        transport = FakeTransport(routes={"/search": search_route, "/v2/insights": insights_route, "/v2/tags": tags_route})
+        client = QlooClient(KEY, transport=transport)
+        model = ScriptedModel([
+            {"text": None, "calls": [{"name": "find_tags", "args": {"query": "record store"}}, BRIDGE_CALL["calls"][0]]},
+            {"text": None, "calls": [{"name": "recommend", "args": {"target_type": "place", "entity_ids": ["E-WES"], "city": "Lisbon",
+                                                                     "filter_tag_ids": ["urn:tag:genre:place:record_store"]}}]},
+            final(["Pensão Amor", "Record store"]),
+        ])
+        result = run_brief(model, client, "x")
+        self.assertEqual([t["ok"] for t in result["trace"]], [True, True, True])
+        self.assertEqual(transport.calls[-1]["params"]["filter.tags"], "urn:tag:genre:place:record_store")
+        self.assertEqual(result["brief"]["unverified"], [{"name": "Record store", "section": "Where to send them"}])
+
     def test_unusable_final_answer_is_an_error(self):
         client, _ = client_and_transport()
         with self.assertRaises(ModelError):
