@@ -9,8 +9,10 @@ the crowd's favourites drove it.
 
 Built for the Qloo Agentic Hackathon.
 
-**Live demo:** https://house-programme.onrender.com/ (free instance: the first request after a quiet spell takes
-about a minute to wake it).
+**Live demo:** https://house-programme.onrender.com/ (a free instance; a scheduled request keeps it awake, and if it
+has dozed off anyway the first page load takes about a minute).
+
+[![tests](https://github.com/yy5652-hash/house-programme/actions/workflows/tests.yml/badge.svg)](https://github.com/yy5652-hash/house-programme/actions/workflows/tests.yml)
 
 ## What is in here
 

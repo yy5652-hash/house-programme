@@ -1,0 +1,14 @@
+name: keep-warm
+# The demo runs on a free instance that sleeps after 15 quiet minutes and takes about a minute to wake.
+# A request every ten minutes keeps it awake. Scheduled runs are best effort, so the odd gap is expected.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+permissions: {}
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - run: curl --silent --show-error --fail --max-time 120 https://house-programme.onrender.com/api/health
