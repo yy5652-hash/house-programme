@@ -5,3 +5,4 @@ __pycache__/
 .pytest_cache/
 STATUS.md
 .DS_Store
+submission/
