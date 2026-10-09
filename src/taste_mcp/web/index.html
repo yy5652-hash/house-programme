@@ -147,6 +147,10 @@ document.querySelectorAll(".chip").forEach((chip) => chip.addEventListener("clic
   if (chip.dataset.saved && !live) fetch("/api/examples/" + chip.dataset.saved).then((r) => (r.ok ? r.json() : null)).then((saved) => { if (box.value === chip.dataset.example) showSaved(saved); }).catch(() => {});
 }));
 
+// A link like /?example=lisbon opens straight on that example's saved run.
+const wanted = new URLSearchParams(location.search).get("example");
+if (wanted) { const chip = document.querySelector(`.chip[data-saved="${CSS.escape(wanted)}"]`); if (chip) chip.click(); }
+
 fetch("/api/health").then((r) => r.json()).then((state) => {
   const missing = Object.entries(state).filter(([, ok]) => !ok).map(([name]) => name.replace("_", " "));
   if (missing.length) say("This deployment is not fully configured yet (missing: " + missing.join(", ") + ").", true);
