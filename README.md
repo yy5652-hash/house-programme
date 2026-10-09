@@ -2,6 +2,8 @@
 
 Programme a real room around what its regulars already love.
 
+**Try it:** https://house-programme.onrender.com/ · **Demo film (2 min):** https://youtu.be/BNlHjhroOOc
+
 A host of a bar, bookshop, cafe or pop-up describes their crowd and their city. An agent asks
 [Qloo's taste graph](https://docs.qloo.com/) what that crowd also loves, across music, film, books, podcasts, brands
 and nearby places, and returns a short programme. Every pick carries its evidence: the affinity score and which of
