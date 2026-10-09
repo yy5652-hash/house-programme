@@ -51,7 +51,9 @@
   article { margin-top: 30px; }
   article h2 { font: 700 clamp(24px, 5vw, 34px)/1.15 var(--serif); margin: 6px 0 10px; }
   .read { font: 18px/1.55 var(--serif); margin: 0 0 8px; }
-  .stats { font: 12px var(--mono); color: var(--muted); margin: 0 0 22px; }
+  .stats { font: 12px var(--mono); color: var(--muted); margin: 0 0 22px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .stats button { font: 12px var(--mono); color: var(--accent); background: none; border: 1px solid var(--accent); border-radius: 999px; padding: 3px 10px; cursor: pointer; }
+  .stats button:hover { background: var(--accent); color: #fff; }
   section { border-top: 2px solid var(--ink); padding-top: 12px; margin-top: 26px; }
   section h3 { font: 600 12px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; margin: 0 0 12px; }
   .pick { display: grid; grid-template-columns: 1fr 132px; gap: 6px 16px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
@@ -150,14 +152,44 @@ fetch("/api/health").then((r) => r.json()).then((state) => {
   if (missing.length) say("This deployment is not fully configured yet (missing: " + missing.join(", ") + ").", true);
 }).catch(() => {});
 
+// The programme as plain text, for a host to paste into a message, a poster or a spreadsheet.
+function asText(data) {
+  const brief = data.brief, lines = [brief.headline || "Your programme", ""];
+  if (brief.audience_read) lines.push(brief.audience_read, "");
+  for (const section of brief.sections || []) {
+    lines.push((section.title || section.kind || "").toUpperCase());
+    for (const pick of section.picks || []) {
+      const pct = typeof pick.affinity === "number" ? Math.round(pick.affinity * 100) + "%" : "in graph";
+      const isPlace = section.kind === "place" || section.kind === "destination";
+      const where = isPlace ? [pick.where, pick.rating ? "rated " + pick.rating : null].filter(Boolean).join(", ") : (pick.detail && pick.detail.toLowerCase() !== String(pick.name).toLowerCase() ? pick.detail : "");
+      const drivers = (pick.drivers || []).filter((d) => d && d.name).slice(0, 2).map((d) => `${d.name} ${Math.round((d.impact || 0) * 100)}%`).join(", ");
+      lines.push(`- ${pick.name}${where ? " (" + where + ")" : ""}: affinity ${pct}${drivers ? ", driven by " + drivers : ""}`);
+      if (pick.why) lines.push(`  ${pick.why}`);
+      if (isPlace && pick.website) lines.push(`  ${pick.website}`);
+    }
+    lines.push("");
+  }
+  if ((brief.unverified || []).length) lines.push("Removed as unverified: " + brief.unverified.map((u) => u.name || u).join(", "), "");
+  lines.push("Every pick comes from a Qloo taste-graph result; affinities are Qloo's scores for this crowd. Made with House Programme.");
+  return lines.join("\n");
+}
+window.asText = asText;
+
 function renderProgramme(data) {
   const brief = data.brief, stats = data.stats || {};
   result.replaceChildren();
   result.append(el("div", { class: "kicker" }, "This month's programme"));
   result.append(el("h2", {}, brief.headline || "Your programme"));
   if (brief.audience_read) result.append(el("p", { class: "read" }, brief.audience_read));
+  const copy = el("button", { type: "button" }, "Copy as text");
+  copy.addEventListener("click", async () => {
+    const text = asText(data);
+    try { await navigator.clipboard.writeText(text); copy.textContent = "Copied"; }
+    catch (error) { const box = el("textarea", { readonly: "", style: "position:fixed;left:-9999px" }, text); document.body.append(box); box.select(); document.execCommand("copy"); box.remove(); copy.textContent = "Copied"; }
+    setTimeout(() => { copy.textContent = "Copy as text"; }, 1800);
+  });
   result.append(el("p", { class: "stats" },
-    `${stats.tool_calls ?? 0} taste-graph calls · ${stats.kept ?? 0} picks verified · ${stats.dropped ?? 0} removed as unverified · ${stats.seconds ?? "?"}s`));
+    `${stats.tool_calls ?? 0} taste-graph calls · ${stats.kept ?? 0} picks verified · ${stats.dropped ?? 0} removed as unverified · ${stats.seconds ?? "?"}s`, copy));
   for (const section of brief.sections || []) {
     const block = el("section", {}, el("h3", {}, section.title || section.kind || ""));
     for (const pick of section.picks || []) {
