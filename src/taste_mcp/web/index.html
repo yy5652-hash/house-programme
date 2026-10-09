@@ -227,7 +227,8 @@ function describe(tool, args) {
   if (tool === "find_tags") return `Finding the taste graph's tag for “${args.query || ""}”`;
   if (tool === "list_audiences") return `Listing audiences: ${args.category || ""}`;
   if (tool === "score_candidates") return `Scoring ${(args.candidate_ids || []).length || "the"} candidates against your crowd`;
-  if (args.target_type === "place") return `${args.category ? args.category[0].toUpperCase() + args.category.slice(1) + "s" : "Places"}${args.city ? " in " + args.city : ""} this crowd also loves`;
+  const many = (w) => (/[^aeiou]y$/.test(w) ? w.slice(0, -1) + "ies" : /(s|x|ch|sh)$/.test(w) ? w + "es" : w + "s");
+  if (args.target_type === "place") return `${args.category ? many(args.category[0].toUpperCase() + args.category.slice(1)) : "Places"}${args.city ? " in " + args.city : ""} this crowd also loves`;
   return `${kind[0].toUpperCase() + kind.slice(1)} this crowd also loves`;
 }
 // One line that always says what is happening now and for how long, so a slow model never looks like a frozen page.
