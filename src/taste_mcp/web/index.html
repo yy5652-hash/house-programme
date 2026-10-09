@@ -235,7 +235,7 @@ let started = 0, ticker = 0, lastEvent = 0, calls = 0;
 function stage(text) { $("stage").textContent = text; lastEvent = Date.now(); }
 function tick() {
   $("clock").textContent = ((Date.now() - started) / 1000).toFixed(0) + " s";
-  if (calls && $("stage").dataset.kind === "graph" && Date.now() - lastEvent > 1500) { $("stage").dataset.kind = "writing"; $("stage").textContent = `${calls} answers in. The model is choosing and writing the programme…`; }
+  if (calls && $("stage").dataset.kind === "graph" && Date.now() - lastEvent > 1500) { $("stage").dataset.kind = "thinking"; $("stage").textContent = `The taste graph has answered ${calls} ${calls === 1 ? "question" : "questions"}. The model is thinking…`; }
 }
 function watch(on) {
   clearInterval(ticker); $("now").hidden = !on;
