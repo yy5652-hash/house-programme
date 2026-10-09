@@ -37,9 +37,16 @@
   .count { font: 12px var(--mono); color: var(--muted); }
   .notice { margin-top: 18px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--rule); background: var(--card); }
   .notice.bad { border-color: var(--accent); }
-  #work { margin: 22px 0 0; padding: 0; list-style: none; font: 13px/1.5 var(--mono); color: var(--muted); }
-  #work li { padding: 4px 0; border-bottom: 1px dashed var(--rule); overflow-wrap: anywhere; }
-  #work .ok { color: var(--good); } #work .fail { color: var(--accent); }
+  #work { margin: 22px 0 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.5; color: var(--muted); max-height: 268px; overflow-y: auto; }
+  #work li { padding: 5px 0; border-bottom: 1px dashed var(--rule); overflow-wrap: anywhere; display: flex; gap: 10px; align-items: baseline; }
+  #work li .what { flex: 1; color: var(--ink); }
+  #work li .tool { font: 11px var(--mono); color: var(--muted); white-space: nowrap; }
+  #work li .got { font: 12px var(--mono); white-space: nowrap; }
+  #work .ok .got { color: var(--good); } #work .fail .got { color: var(--accent); }
+  #now { margin-top: 12px; font: 13px var(--mono); color: var(--muted); display: flex; gap: 10px; align-items: center; }
+  #now .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); animation: beat 1s ease-in-out infinite; }
+  @keyframes beat { 0%, 100% { opacity: .35; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.15); } }
+  @media (prefers-reduced-motion: reduce) { #now .dot { animation: none; } }
   article { margin-top: 30px; }
   article h2 { font: 700 clamp(24px, 5vw, 34px)/1.15 var(--serif); margin: 6px 0 10px; }
   .read { font: 18px/1.55 var(--serif); margin: 0 0 8px; }
@@ -102,6 +109,7 @@
 
   <div id="notice" class="notice" hidden></div>
   <ul id="work" aria-live="polite"></ul>
+  <div id="now" hidden><span class="dot"></span><span id="stage"></span><span id="clock"></span></div>
   <article id="result" hidden></article>
 
   <footer>Every pick is taken from a taste-graph result; anything the agent adds from memory is removed and listed as unverified.
@@ -210,11 +218,40 @@ function renderComparison(data) {
   if (anchor) result.insertBefore(block, anchor); else result.append(block);
 }
 
+// What one tool call is for, in words a host can read. The exact call stays in the line's tooltip and under "Show the work".
+const KINDS = { artist: "artists", movie: "films", book: "books", podcast: "podcasts", brand: "brands", tv_show: "series", place: "places",
+                destination: "destinations", person: "people", video_game: "games" };
+function describe(tool, args) {
+  const list = (a) => (Array.isArray(a) ? a.join(", ") : a || ""), kind = KINDS[args.target_type] || "picks";
+  if (tool === "find_entities") return `Looking up ${list(args.names) || "your favourites"}`;
+  if (tool === "find_tags") return `Finding the taste graph's tag for “${args.query || ""}”`;
+  if (tool === "list_audiences") return `Listing audiences: ${args.category || ""}`;
+  if (tool === "score_candidates") return `Scoring ${(args.candidate_ids || []).length || "the"} candidates against your crowd`;
+  if (args.target_type === "place") return `${args.category ? args.category[0].toUpperCase() + args.category.slice(1) + "s" : "Places"}${args.city ? " in " + args.city : ""} this crowd also loves`;
+  return `${kind[0].toUpperCase() + kind.slice(1)} this crowd also loves`;
+}
+// One line that always says what is happening now and for how long, so a slow model never looks like a frozen page.
+let started = 0, ticker = 0, lastEvent = 0, calls = 0;
+function stage(text) { $("stage").textContent = text; lastEvent = Date.now(); }
+function tick() {
+  $("clock").textContent = ((Date.now() - started) / 1000).toFixed(0) + " s";
+  if (calls && $("stage").dataset.kind === "graph" && Date.now() - lastEvent > 1500) { $("stage").dataset.kind = "writing"; $("stage").textContent = `${calls} answers in. The model is choosing and writing the programme…`; }
+}
+function watch(on) {
+  clearInterval(ticker); $("now").hidden = !on;
+  if (on) { started = Date.now(); calls = 0; $("stage").dataset.kind = "reading"; stage("Reading your brief…"); tick(); ticker = setInterval(tick, 250); }
+}
 function handle(event) {
-  if (event.type === "call") work.append(el("li", {}, `asking the taste graph: ${event.tool} ${short(event.args)}`));
-  else if (event.type === "result") work.append(el("li", { class: event.ok ? "ok" : "fail" },
-    event.ok ? `  ↳ ${event.returned ?? "ok"}${event.returned != null ? " results" : ""}` : `  ↳ ${event.error}`));
-  else if (event.type === "programme") { work.replaceChildren(); renderProgramme(event); }
+  if (event.type === "call") {
+    $("stage").dataset.kind = "graph"; stage("Asking the taste graph…");
+    work.append(el("li", { title: `${event.tool} ${JSON.stringify(event.args)}` }, el("span", { class: "what" }, describe(event.tool, event.args || {})),
+      el("span", { class: "tool" }, event.tool), el("span", { class: "got" }, "…")));
+    work.scrollTop = work.scrollHeight;
+  } else if (event.type === "result") {
+    calls += 1; lastEvent = Date.now();
+    const open = [...work.querySelectorAll("li")].find((li) => li.querySelector(".got").textContent === "…");
+    if (open) { open.className = event.ok ? "ok" : "fail"; open.querySelector(".got").textContent = event.ok ? (event.returned != null ? `✓ ${event.returned}` : "✓") : "refused"; if (!event.ok) open.title += "\n" + event.error; }
+  } else if (event.type === "programme") { work.replaceChildren(); renderProgramme(event); $("stage").dataset.kind = "second"; stage("Programme ready. Asking the model what it would have said on its own…"); }
   else if (event.type === "comparing") result.append(el("p", { class: "pending" }, "Now asking the model what it would have said on its own…"));
   else if (event.type === "comparison") renderComparison(event);
   else if (event.type === "error") say(event.message, true);
@@ -224,7 +261,7 @@ form.addEventListener("submit", async (submit) => {
   submit.preventDefault();
   const request = box.value.trim();
   if (request.length < 8) { say("Tell it a little more about your crowd.", true); return; }
-  say(""); result.hidden = true; work.replaceChildren(el("li", {}, "reading your brief…"));
+  say(""); result.hidden = true; work.replaceChildren(); watch(true);
   go.disabled = true; go.textContent = "Working…";
   try {
     const response = await fetch("/api/programme", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ request }) });
@@ -242,7 +279,7 @@ form.addEventListener("submit", async (submit) => {
       }
     }
   } catch (error) { say(error.message || "Could not reach the server.", true); work.replaceChildren(); }
-  finally { go.disabled = false; go.textContent = "Build the programme"; }
+  finally { watch(false); go.disabled = false; go.textContent = "Build the programme"; }
 });
 </script>
 </body>
