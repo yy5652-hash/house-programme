@@ -1,15 +1,21 @@
 name: keep-warm
 # The demo runs on a free instance that sleeps after 15 quiet minutes and takes about a minute to wake.
-# Scheduled runs are best effort and arrive late: asked for every ten minutes they came 16 to 25 minutes apart, which
-# still let the instance sleep. Asking every five keeps the real gaps under the fifteen-minute limit more often.
+# GitHub starts scheduled runs late: asked for every five or ten minutes, they came 16 to 30 minutes apart, which still
+# let the instance sleep. So each run pings for most of an hour, five minutes apart, and runs are scheduled every half
+# hour; two overlapping runs just ping twice. Minutes are free for a public repository.
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "7,37 * * * *"
   workflow_dispatch:
 permissions: {}
 jobs:
   ping:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 62
     steps:
-      - run: curl --silent --show-error --fail --max-time 120 https://house-programme.onrender.com/api/health
+      - run: |
+          for i in $(seq 1 11); do
+            curl --silent --show-error --fail --max-time 120 https://house-programme.onrender.com/api/health || true
+            echo " $(date -u +%H:%M:%S)"
+            [ "$i" -lt 11 ] && sleep 300
+          done
