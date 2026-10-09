@@ -1,9 +1,10 @@
 name: keep-warm
 # The demo runs on a free instance that sleeps after 15 quiet minutes and takes about a minute to wake.
-# A request every ten minutes keeps it awake. Scheduled runs are best effort, so the odd gap is expected.
+# Scheduled runs are best effort and arrive late: asked for every ten minutes they came 16 to 25 minutes apart, which
+# still let the instance sleep. Asking every five keeps the real gaps under the fifteen-minute limit more often.
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 permissions: {}
 jobs:

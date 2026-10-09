@@ -83,6 +83,14 @@ def create_app(client: QlooClient = None, model=None, limiter: RateLimiter = Non
     def health():
         return ready()
 
+    @app.get("/api/examples/{name}")
+    def example(name: str):
+        """A saved real run of one of the page's examples (written by scripts/save_examples.py)."""
+        path = WEB_DIR / "examples" / f"{name}.json"
+        if not name.isalpha() or not name.islower() or not path.is_file():
+            raise HTTPException(status_code=404, detail="No saved run by that name.")
+        return FileResponse(path, media_type="application/json")
+
     @app.post("/api/programme")
     def programme(body: BriefRequest, http: Request):
         state = ready()

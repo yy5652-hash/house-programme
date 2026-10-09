@@ -1,0 +1,806 @@
+{
+ "saved_at": "2026-10-09T13:26:12Z",
+ "source": "https://house-programme.onrender.com",
+ "request": "We run a 40-seat natural wine bar in Lisbon. Regulars talk about Wes Anderson, Phoebe Bridgers and Sally Rooney. Plan our next month: music, one film night, a book for the club, and neighbours to team up with.",
+ "seconds": 22.7,
+ "calls": 7,
+ "programme": {
+  "type": "programme",
+  "brief": {
+   "headline": "Melancholy, mid-century frames and modern prose over natural pours",
+   "audience_read": "This crowd is united by a taste for bittersweet indie folk, intricate interpersonal drama and stylized visual storytelling. They gravitate toward intimate, contemporary art and literature with a distinctly melancholic edge.",
+   "sections": [
+    {
+     "title": "On the speakers",
+     "kind": "artist",
+     "picks": [
+      {
+       "name": "Lucy Dacus",
+       "why": "Brings the same sharp, confessional lyricism that Phoebe Bridgers fans adore.",
+       "id": "99FBEE0C-2A8A-4EE2-9B20-8CEBD854CD46",
+       "affinity": 0.956,
+       "tags": [
+        "Indie Folk",
+        "Indie Rock",
+        "Alternative Rock",
+        "Indie",
+        "Singer & Songwriter",
+        "Folk"
+       ],
+       "detail": "Lucy Dacus",
+       "image": "https://images.qloo.com/i/99FBEE0C-2A8A-4EE2-9B20-8CEBD854CD46-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/99FBEE0C-2A8A-4EE2-9B20-8CEBD854CD46-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.408,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.349,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.243,
+         "name": "Wes Anderson"
+        }
+       ]
+      },
+      {
+       "name": "Matt Berninger",
+       "why": "Delivers baritone indie-rock arrangements fitting for a candlelit wine bar.",
+       "id": "84EAECD1-A605-468E-A066-6AC7208DA4A2",
+       "affinity": 0.948,
+       "tags": [
+        "Alternative Rock",
+        "Indie Rock",
+        "Art Rock",
+        "Baroque Pop",
+        "Reserved",
+        "Melancholic Indie"
+       ],
+       "detail": "Matt Berninger",
+       "image": "https://images.qloo.com/i/84EAECD1-A605-468E-A066-6AC7208DA4A2-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/84EAECD1-A605-468E-A066-6AC7208DA4A2-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.398,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.339,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.264,
+         "name": "Wes Anderson"
+        }
+       ]
+      },
+      {
+       "name": "Big Red Machine",
+       "why": "Blends atmospheric folk and indie collaboration in tune with the crowd's taste.",
+       "id": "C8B165BC-286E-4840-9417-AF68A8A690ED",
+       "affinity": 0.947,
+       "tags": [
+        "Indie",
+        "Indie Rock",
+        "Folktronica",
+        "Alternative Rock",
+        "Folk Rock",
+        "Experimental"
+       ],
+       "detail": "Big Red Machine",
+       "image": "https://images.qloo.com/i/C8B165BC-286E-4840-9417-AF68A8A690ED-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/C8B165BC-286E-4840-9417-AF68A8A690ED-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.4,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.363,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.237,
+         "name": "Wes Anderson"
+        }
+       ]
+      },
+      {
+       "name": "Julia Jacklin",
+       "why": "Offers introspective songwriting with an understated, emotional punch.",
+       "id": "4CE60D14-B414-4163-97C3-C1E51108ED90",
+       "affinity": 0.947,
+       "tags": [
+        "Indie Folk",
+        "Alternative",
+        "Indie - Folk",
+        "Indie",
+        "Singer & Songwriter",
+        "Australian"
+       ],
+       "detail": "Julia Jacklin",
+       "image": "https://images.qloo.com/i/4CE60D14-B414-4163-97C3-C1E51108ED90-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/4CE60D14-B414-4163-97C3-C1E51108ED90-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.401,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.338,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.262,
+         "name": "Wes Anderson"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Film night",
+     "kind": "movie",
+     "picks": [
+      {
+       "name": "Marriage Story",
+       "why": "Features Noah Baumbach's delicate eye for domestic relationships and dry wit.",
+       "id": "9E661A87-6EB9-4138-8795-27284CD8E249",
+       "affinity": 0.916,
+       "tags": [
+        "Romance",
+        "Drama",
+        "Relationship drama",
+        "Legal drama",
+        "Independent drama",
+        "Domestic drama"
+       ],
+       "detail": "2019, Noah Baumbach",
+       "image": "https://images.qloo.com/i/9E661A87-6EB9-4138-8795-27284CD8E249-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/9E661A87-6EB9-4138-8795-27284CD8E249-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.353,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.344,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.303,
+         "name": "Wes Anderson"
+        }
+       ]
+      },
+      {
+       "name": "The Farewell",
+       "why": "Shares the tender, naturalistic family dynamics found in Wes Anderson's finest work.",
+       "id": "B411575F-057B-4913-BD80-F189FFA6570F",
+       "affinity": 0.917,
+       "tags": [
+        "Comedy",
+        "Drama",
+        "Diaspora",
+        "Family drama",
+        "Understated humor",
+        "Naturalistic"
+       ],
+       "detail": "2019, Lulu Wang",
+       "image": "https://images.qloo.com/i/B411575F-057B-4913-BD80-F189FFA6570F-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/B411575F-057B-4913-BD80-F189FFA6570F-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.37,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.349,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.281,
+         "name": "Wes Anderson"
+        }
+       ]
+      },
+      {
+       "name": "Beautiful Boy",
+       "why": "An intimate, character-driven drama that resonates with Sally Rooney readers.",
+       "id": "FC877810-FE6F-4D25-83B5-015B43E2018F",
+       "affinity": 0.923,
+       "tags": [
+        "Biography",
+        "Drama",
+        "Addiction drama",
+        "Family drama",
+        "Biographical drama",
+        "Intimate"
+       ],
+       "detail": "2018, Felix van Groeningen",
+       "image": "https://images.qloo.com/i/FC877810-FE6F-4D25-83B5-015B43E2018F-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/FC877810-FE6F-4D25-83B5-015B43E2018F-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.358,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.347,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.296,
+         "name": "Wes Anderson"
+        }
+       ]
+      },
+      {
+       "name": "The Tale",
+       "why": "A haunting autobiographical drama that captures complicated memory and youth.",
+       "id": "B1E9C8A6-DB42-45F3-910B-B1AF94376165",
+       "affinity": 0.917,
+       "tags": [
+        "Mystery",
+        "Drama",
+        "Thriller",
+        "Biography",
+        "Docudrama",
+        "Autobiographical"
+       ],
+       "detail": "2018, Jennifer Fox",
+       "image": "https://images.qloo.com/i/B1E9C8A6-DB42-45F3-910B-B1AF94376165-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/B1E9C8A6-DB42-45F3-910B-B1AF94376165-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.367,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.352,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.281,
+         "name": "Wes Anderson"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Book club",
+     "kind": "book",
+     "picks": [
+      {
+       "name": "Conversations with Friends",
+       "why": "Sally Rooney's sharp exploration of young intellectual circles and complex modern romance.",
+       "id": "A193D8AC-FC7C-4382-9AFE-6638B637DCEB",
+       "affinity": 0.897,
+       "detail": "2017, Sally Rooney",
+       "image": "https://images.qloo.com/i/A193D8AC-FC7C-4382-9AFE-6638B637DCEB-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/A193D8AC-FC7C-4382-9AFE-6638B637DCEB-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.356,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.338,
+         "name": "Wes Anderson"
+        },
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.306,
+         "name": "Phoebe Bridgers"
+        }
+       ]
+      },
+      {
+       "name": "On Earth We're Briefly Gorgeous",
+       "why": "Lyrical, epistolary prose echoing the emotional vulnerability of Phoebe Bridgers' lyrics.",
+       "id": "B0AE3E11-4B65-41B7-9D0F-D525AD9386E5",
+       "affinity": 0.924,
+       "tags": [
+        "Adult",
+        "Poetry",
+        "Fiction",
+        "Queer",
+        "LGBT",
+        "Contemporary"
+       ],
+       "detail": "2019, Ocean Vuong",
+       "image": "https://images.qloo.com/i/B0AE3E11-4B65-41B7-9D0F-D525AD9386E5-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/B0AE3E11-4B65-41B7-9D0F-D525AD9386E5-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.351,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.326,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.323,
+         "name": "Wes Anderson"
+        }
+       ]
+      },
+      {
+       "name": "A Little Life",
+       "why": "An immersive, heart-wrenching modern epic beloved by contemporary fiction readers.",
+       "id": "87D361D0-275F-49F4-9AD6-B4C953580D12",
+       "affinity": 0.927,
+       "tags": [
+        "Adult",
+        "Contemporary",
+        "Drama",
+        "Audiobook",
+        "Fiction",
+        "Queer"
+       ],
+       "detail": "2015, Hanya Yanagihara",
+       "image": "https://images.qloo.com/i/87D361D0-275F-49F4-9AD6-B4C953580D12-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/87D361D0-275F-49F4-9AD6-B4C953580D12-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.373,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.328,
+         "name": "Wes Anderson"
+        },
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.299,
+         "name": "Phoebe Bridgers"
+        }
+       ]
+      },
+      {
+       "name": "To Paradise",
+       "why": "Hanya Yanagihara's sprawling, beautifully crafted meditation on love, loss, and legacy.",
+       "id": "D973B1C6-3013-4504-89DA-CB70EBAB510D",
+       "affinity": 0.902,
+       "tags": [
+        "Literary Fiction",
+        "Historical",
+        "Queer",
+        "Audiobook",
+        "LGBT",
+        "Contemporary"
+       ],
+       "detail": "2022, Hanya Yanagihara",
+       "image": "https://images.qloo.com/i/D973B1C6-3013-4504-89DA-CB70EBAB510D-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/D973B1C6-3013-4504-89DA-CB70EBAB510D-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.364,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.35,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.285,
+         "name": "Wes Anderson"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Neighbours to team up with",
+     "kind": "place",
+     "picks": [
+      {
+       "name": "Amor Records",
+       "why": "An indie record shop and bar in Anjos sharing the crowd's musical sensibilities.",
+       "id": "8C42141C-7C00-4C90-8A62-0128A4FC46DB",
+       "affinity": 0.744,
+       "where": "Anjos, Lisbon, PT",
+       "tags": [
+        "Music store",
+        "Bar",
+        "Cultural center",
+        "Coffee stand",
+        "Record store",
+        "Restaurant"
+       ],
+       "detail": "R. Frei Francisco Foreiro 2A 1150-166 Lisboa Portugal",
+       "image": "https://images.qloo.com/i/8C42141C-7C00-4C90-8A62-0128A4FC46DB-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/8C42141C-7C00-4C90-8A62-0128A4FC46DB-420x-auto.jpg",
+       "website": "https://instagram.com/records.amor",
+       "rating": 4.7,
+       "drivers": [
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.345,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.343,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.311,
+         "name": "Wes Anderson"
+        }
+       ]
+      },
+      {
+       "name": "Ladidadi Wines",
+       "why": "A natural wine bar and record shop partner for joint tastings and pop-ups.",
+       "id": "7E16C190-B75C-49F8-A420-AAA3BACE714F",
+       "affinity": 0.743,
+       "where": "Lisbon, PT",
+       "tags": [
+        "Restaurant",
+        "Record store",
+        "Wine bar",
+        "Wine store",
+        "Wine wholesaler and importer",
+        "Unique"
+       ],
+       "detail": "R. Damasceno Monteiro 59 A 1170-110 Lisboa Portugal",
+       "image": "https://images.qloo.com/i/7E16C190-B75C-49F8-A420-AAA3BACE714F-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/7E16C190-B75C-49F8-A420-AAA3BACE714F-420x-auto.jpg",
+       "website": "http://www.ladidadi.shop/",
+       "rating": 4.6,
+       "drivers": [
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.355,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.343,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.302,
+         "name": "Wes Anderson"
+        }
+       ]
+      },
+      {
+       "name": "Livraria da Travessa - Lisboa",
+       "why": "A cultural bookstore partner in central Lisbon for book club events.",
+       "id": "BC5D09DB-E963-451C-A007-DED492B7FBB9",
+       "affinity": 0.789,
+       "where": "São Mamede, Lisbon, PT",
+       "tags": [
+        "Cd store",
+        "Dvd store",
+        "Book store",
+        "Restaurant",
+        "Cafeteria",
+        "Cultural"
+       ],
+       "detail": "R. da Escola Politécnica 46 1250-102 Lisboa Portugal",
+       "image": "https://images.qloo.com/i/BC5D09DB-E963-451C-A007-DED492B7FBB9-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/BC5D09DB-E963-451C-A007-DED492B7FBB9-420x-auto.jpg",
+       "website": "http://www.travessa.pt/",
+       "rating": 4.8,
+       "drivers": [
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.37,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.334,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.296,
+         "name": "Wes Anderson"
+        }
+       ]
+      },
+      {
+       "name": "Underdogs",
+       "why": "A contemporary art platform and gallery ideal for creative cross-promotions.",
+       "id": "09DFA716-86AF-4EBB-B6D7-A4E2A152D496",
+       "affinity": 0.808,
+       "where": "Poço do Bispo, Lisbon, PT",
+       "tags": [
+        "Tourist attraction",
+        "Art gallery",
+        "Relaxing",
+        "Welcoming",
+        "Intimate",
+        "Unique"
+       ],
+       "detail": "R. Fernando Palha 56 1950-132 Lisboa Portugal",
+       "image": "https://images.qloo.com/i/09DFA716-86AF-4EBB-B6D7-A4E2A152D496-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/09DFA716-86AF-4EBB-B6D7-A4E2A152D496-420x-auto.jpg",
+       "website": "http://www.under-dogs.net/",
+       "rating": 4.4,
+       "drivers": [
+        {
+         "signal": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+         "impact": 0.36,
+         "name": "Sally Rooney"
+        },
+        {
+         "signal": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+         "impact": 0.332,
+         "name": "Phoebe Bridgers"
+        },
+        {
+         "signal": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+         "impact": 0.308,
+         "name": "Wes Anderson"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "caveats": [],
+   "unverified": [],
+   "grounding": {
+    "kept": 16,
+    "dropped": 0
+   }
+  },
+  "trace": [
+   {
+    "step": 1,
+    "tool": "find_entities",
+    "args": {
+     "names": [
+      "Wes Anderson",
+      "Phoebe Bridgers",
+      "Sally Rooney"
+     ]
+    },
+    "ok": true,
+    "error": null
+   },
+   {
+    "step": 2,
+    "tool": "recommend",
+    "args": {
+     "entity_ids": [
+      "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+      "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+      "AFBD8046-4EAC-4C0B-8348-955B033A8573"
+     ],
+     "target_type": "artist",
+     "take": 4
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   },
+   {
+    "step": 2,
+    "tool": "recommend",
+    "args": {
+     "take": 4,
+     "entity_ids": [
+      "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+      "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+      "AFBD8046-4EAC-4C0B-8348-955B033A8573"
+     ],
+     "target_type": "movie"
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   },
+   {
+    "step": 2,
+    "tool": "recommend",
+    "args": {
+     "take": 4,
+     "target_type": "book",
+     "entity_ids": [
+      "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+      "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+      "AFBD8046-4EAC-4C0B-8348-955B033A8573"
+     ]
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   },
+   {
+    "step": 2,
+    "tool": "bridge_tastes",
+    "args": {
+     "category": "record store",
+     "target_type": "place",
+     "take": 3,
+     "city": "Lisbon",
+     "seeds": [
+      "Wes Anderson",
+      "Phoebe Bridgers",
+      "Sally Rooney"
+     ]
+    },
+    "ok": true,
+    "error": null,
+    "returned": 3
+   },
+   {
+    "step": 2,
+    "tool": "bridge_tastes",
+    "args": {
+     "target_type": "place",
+     "take": 3,
+     "city": "Lisbon",
+     "seeds": [
+      "Wes Anderson",
+      "Phoebe Bridgers",
+      "Sally Rooney"
+     ],
+     "category": "bookstore"
+    },
+    "ok": true,
+    "error": null,
+    "returned": 3
+   },
+   {
+    "step": 2,
+    "tool": "bridge_tastes",
+    "args": {
+     "city": "Lisbon",
+     "take": 3,
+     "seeds": [
+      "Wes Anderson",
+      "Phoebe Bridgers",
+      "Sally Rooney"
+     ],
+     "category": "art gallery",
+     "target_type": "place"
+    },
+    "ok": true,
+    "error": null,
+    "returned": 3
+   }
+  ],
+  "seeds": [
+   {
+    "id": "C71B6CCE-3F05-4A57-AA84-9D2C2B4D67C5",
+    "name": "Wes Anderson"
+   },
+   {
+    "id": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+    "name": "Phoebe Bridgers"
+   },
+   {
+    "id": "AFBD8046-4EAC-4C0B-8348-955B033A8573",
+    "name": "Sally Rooney"
+   }
+  ],
+  "stats": {
+   "tool_calls": 7,
+   "failed_calls": 0,
+   "entities_seen": 24,
+   "kept": 16,
+   "dropped": 0,
+   "seconds": 17.5
+  }
+ },
+ "comparison": {
+  "type": "comparison",
+  "rows": [
+   {
+    "kind": "artist",
+    "name": "Father John Misty",
+    "status": "scored",
+    "affinity": 0.932,
+    "below_programme": true
+   },
+   {
+    "kind": "artist",
+    "name": "Mitski",
+    "status": "scored",
+    "affinity": 0.942,
+    "below_programme": true
+   },
+   {
+    "kind": "movie",
+    "name": "Before Sunrise",
+    "status": "scored",
+    "affinity": 0.8,
+    "below_programme": true
+   },
+   {
+    "kind": "movie",
+    "name": "Frances Ha",
+    "status": "scored",
+    "affinity": 0.887,
+    "below_programme": true
+   },
+   {
+    "kind": "book",
+    "name": "Normal People",
+    "status": "scored",
+    "affinity": 0.846,
+    "below_programme": true
+   },
+   {
+    "kind": "book",
+    "name": "The Bell Jar",
+    "status": "scored",
+    "affinity": 0.847,
+    "below_programme": true
+   },
+   {
+    "kind": "place",
+    "name": "Prado Mercearia",
+    "status": "no_affinity"
+   },
+   {
+    "kind": "place",
+    "name": "Livraria Ler Devagar",
+    "resolved_as": "Ler Devagar",
+    "status": "no_affinity"
+   }
+  ],
+  "summary": {
+   "suggested": 8,
+   "in_programme": 0,
+   "scored": 6,
+   "no_affinity": 2,
+   "not_in_graph": 0,
+   "unchecked": 0,
+   "scored_below_programme": 6,
+   "programme_floors": {
+    "artist": 0.947,
+    "movie": 0.916,
+    "book": 0.897,
+    "place": 0.743
+   }
+  }
+ }
+}

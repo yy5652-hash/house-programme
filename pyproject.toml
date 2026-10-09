@@ -24,4 +24,4 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-taste_mcp = ["web/*.html"]
+taste_mcp = ["web/*.html", "web/examples/*.json"]

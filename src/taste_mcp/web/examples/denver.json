@@ -1,0 +1,882 @@
+{
+ "saved_at": "2026-10-09T13:27:20Z",
+ "source": "https://house-programme.onrender.com",
+ "request": "Climbing gym cafe in Denver. Members are into Patagonia, Free Solo, and Khruangbin. Suggest a playlist direction, a film night, a podcast to sponsor and local places to partner with.",
+ "seconds": 28.8,
+ "calls": 8,
+ "programme": {
+  "type": "programme",
+  "brief": {
+   "headline": "Chasing summits, smooth grooves, and high-altitude focus for the Denver climbing community",
+   "audience_read": "This crowd is united by a love for raw adventure, environmental consciousness, and hypnotic, global-inflected grooves. Driven by a passion for outdoor exploration and high-focus endurance, they gravitate toward soul-infused sounds and epic adventure literature.",
+   "sections": [
+    {
+     "title": "On the speakers",
+     "kind": "artist",
+     "picks": [
+      {
+       "name": "Leon Bridges",
+       "why": "Brings the same vintage soul and smooth retro warmth that complements the crowd's love for Khruangbin.",
+       "id": "96B907F3-9F2C-4E6E-BCCF-9C9F0173E162",
+       "affinity": 0.942,
+       "tags": [
+        "American",
+        "Soul",
+        "R & B",
+        "Rhythm And Blues",
+        "Nu Soul",
+        "Neo Soul"
+       ],
+       "detail": "Leon Bridges",
+       "image": "https://images.qloo.com/i/96B907F3-9F2C-4E6E-BCCF-9C9F0173E162-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/96B907F3-9F2C-4E6E-BCCF-9C9F0173E162-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.369,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.341,
+         "name": "Khruangbin"
+        },
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.29,
+         "name": "Free Solo"
+        }
+       ]
+      },
+      {
+       "name": "Jim James",
+       "why": "Offers soaring vocals and psychedelic folk-rock textures ideal for unwinding after a heavy session on the wall.",
+       "id": "92DC55D8-08A7-4F31-9E1B-39D3AD707633",
+       "affinity": 0.942,
+       "tags": [
+        "Rock",
+        "Indie",
+        "Indie Rock",
+        "Alternative Rock",
+        "New Weird America",
+        "Psychedelic Rock"
+       ],
+       "detail": "Jim James",
+       "image": "https://images.qloo.com/i/92DC55D8-08A7-4F31-9E1B-39D3AD707633-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/92DC55D8-08A7-4F31-9E1B-39D3AD707633-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.349,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.325,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.325,
+         "name": "Khruangbin"
+        }
+       ]
+      },
+      {
+       "name": "St. Paul & The Broken Bones",
+       "why": "Delivers high-energy, soulful brass and gritty vocals that match an active, passionate climbing lifestyle.",
+       "id": "AFDEDBC3-D20A-41D3-8E2A-D3C4AC041604",
+       "affinity": 0.938,
+       "tags": [
+        "Soul",
+        "R & B",
+        "Blues",
+        "Indie",
+        "Funk",
+        "American"
+       ],
+       "detail": "St. Paul & The Broken Bones",
+       "image": "https://images.qloo.com/i/AFDEDBC3-D20A-41D3-8E2A-D3C4AC041604-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/AFDEDBC3-D20A-41D3-8E2A-D3C4AC041604-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.374,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.326,
+         "name": "Khruangbin"
+        },
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.301,
+         "name": "Free Solo"
+        }
+       ]
+      },
+      {
+       "name": "Shakey Graves",
+       "why": "Blends indie folk and Americana roots that resonate with outdoor enthusiasts and mountain culture.",
+       "id": "461D94F8-77B3-4544-9796-D888A899048E",
+       "affinity": 0.934,
+       "tags": [
+        "Indie Folk",
+        "Americana",
+        "Indie - Folk",
+        "Lo - Fi",
+        "Singer & Songwriter",
+        "Folk"
+       ],
+       "detail": "Shakey Graves",
+       "image": "https://images.qloo.com/i/461D94F8-77B3-4544-9796-D888A899048E-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/461D94F8-77B3-4544-9796-D888A899048E-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.379,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.326,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.294,
+         "name": "Khruangbin"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Film night",
+     "kind": "movie",
+     "picks": [
+      {
+       "name": "The Dawn Wall",
+       "why": "A gripping alpine epic that speaks directly to the extreme vertical ambitions of Free Solo fans.",
+       "id": "D4EBB9FC-D78C-4B61-A20C-8402744F59EB",
+       "affinity": 0.946,
+       "tags": [
+        "Sport",
+        "Documentary",
+        "Biography",
+        "Adventure",
+        "Biographical documentary",
+        "Expedition documentary"
+       ],
+       "detail": "2017, Josh Lowell,Peter Mortimer",
+       "image": "https://images.qloo.com/i/D4EBB9FC-D78C-4B61-A20C-8402744F59EB-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/D4EBB9FC-D78C-4B61-A20C-8402744F59EB-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.369,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.367,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.263,
+         "name": "Khruangbin"
+        }
+       ]
+      },
+      {
+       "name": "Meru",
+       "why": "Follows elite mountaineers pushing their limits on a brutal alpine wall, perfect for an adventure-hungry crowd.",
+       "id": "A4F03193-7D44-4D91-957F-7217F1668C28",
+       "affinity": 0.915,
+       "tags": [
+        "Sports",
+        "Adventure",
+        "Sport",
+        "Documentary",
+        "Adventure documentary",
+        "Climbing"
+       ],
+       "detail": "2015, Elizabeth Chai Vasarhelyi,Jimmy Chin",
+       "image": "https://images.qloo.com/i/A4F03193-7D44-4D91-957F-7217F1668C28-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/A4F03193-7D44-4D91-957F-7217F1668C28-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.384,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.361,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.254,
+         "name": "Khruangbin"
+        }
+       ]
+      },
+      {
+       "name": "Valley Uprising",
+       "why": "Explores the countercultural roots of Yosemite climbing, pairing perfectly with Patagonia's rebellious outdoor heritage.",
+       "id": "930A8A74-18E1-4D1E-BAA8-F5A619AE128A",
+       "affinity": 0.907,
+       "tags": [
+        "Documentary",
+        "Adventure",
+        "Biographical documentary",
+        "Sports documentary",
+        "Climbing documentary",
+        "Outdoor documentary"
+       ],
+       "detail": "2014, Josh Lowell,Nick Rosen,Peter Mortimer",
+       "image": "https://images.qloo.com/i/930A8A74-18E1-4D1E-BAA8-F5A619AE128A-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/930A8A74-18E1-4D1E-BAA8-F5A619AE128A-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.377,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.359,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.264,
+         "name": "Khruangbin"
+        }
+       ]
+      },
+      {
+       "name": "Three Identical Strangers",
+       "why": "A riveting documentary exploring extraordinary human experiences and astonishing twists for deep-dive film buffs.",
+       "id": "FAE9F10A-9BA6-4FEF-A024-626A65EE2CF5",
+       "affinity": 0.904,
+       "tags": [
+        "Biography",
+        "Mystery",
+        "Drama",
+        "Documentary",
+        "History",
+        "Historical"
+       ],
+       "detail": "2018, Tim Wardle",
+       "image": "https://images.qloo.com/i/FAE9F10A-9BA6-4FEF-A024-626A65EE2CF5-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/FAE9F10A-9BA6-4FEF-A024-626A65EE2CF5-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.371,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.346,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.283,
+         "name": "Khruangbin"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Book club",
+     "kind": "book",
+     "picks": [
+      {
+       "name": "Classic Krakauer: After the Fall, Mark Foo's Last Ride and Other Essays from the Vault",
+       "why": "Compelling investigative journalism on extreme risk and survival that speaks directly to the Free Solo mindset.",
+       "id": "7468CDC5-E025-4E71-9CB5-865FAEC5EEF6",
+       "affinity": 0.924,
+       "detail": "2018, Jon Krakauer",
+       "image": "https://images.qloo.com/i/7468CDC5-E025-4E71-9CB5-865FAEC5EEF6-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/7468CDC5-E025-4E71-9CB5-865FAEC5EEF6-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.349,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.339,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.313,
+         "name": "Khruangbin"
+        }
+       ]
+      },
+      {
+       "name": "Lost in the Valley of Death: A Story of Obsession and Danger in the Himalayas",
+       "why": "A riveting narrative of adventure, obsession, and remote wilderness danger for outdoor enthusiasts.",
+       "id": "94C7F071-3721-405F-BB04-D78CE775D043",
+       "affinity": 0.906,
+       "detail": "2022, Harley Rustad",
+       "image": "https://images.qloo.com/i/94C7F071-3721-405F-BB04-D78CE775D043-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/94C7F071-3721-405F-BB04-D78CE775D043-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.341,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.34,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.319,
+         "name": "Khruangbin"
+        }
+       ]
+      },
+      {
+       "name": "There and Back: Photographs from the Edge",
+       "why": "Stunning adventure photography by Free Solo co-director Jimmy Chin capturing elite mountaineering.",
+       "id": "D0DADF0F-3247-4F22-AEF4-10BCA6723018",
+       "affinity": 0.904,
+       "detail": "2021, Jimmy Chin",
+       "image": "https://images.qloo.com/i/D0DADF0F-3247-4F22-AEF4-10BCA6723018-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/D0DADF0F-3247-4F22-AEF4-10BCA6723018-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.346,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.332,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.322,
+         "name": "Khruangbin"
+        }
+       ]
+      },
+      {
+       "name": "Lines on a Map: Unparalleled Adventures in Modern Exploration",
+       "why": "Inspiring travel journalism and environmental storytelling that aligns with the Patagonia ethos.",
+       "id": "949C452D-6F1C-47D8-AE60-2EF3C4F0F623",
+       "affinity": 0.897,
+       "detail": "2018, Frank Wolf",
+       "image": "https://images.qloo.com/i/949C452D-6F1C-47D8-AE60-2EF3C4F0F623-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/949C452D-6F1C-47D8-AE60-2EF3C4F0F623-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.34,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.335,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.325,
+         "name": "Khruangbin"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Podcasts to sponsor",
+     "kind": "podcast",
+     "picks": [
+      {
+       "name": "The Rich Roll Podcast",
+       "why": "Explores plant-based endurance, deep self-improvement, and outdoor adventure that aligns with Patagonia values.",
+       "id": "C752CB19-BA38-4911-AB63-EADACE2DEEED",
+       "affinity": 0.942,
+       "tags": [
+        "Education",
+        "Health & Fitness",
+        "Self-Improvement"
+       ],
+       "image": "https://images.qloo.com/i/C752CB19-BA38-4911-AB63-EADACE2DEEED-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/C752CB19-BA38-4911-AB63-EADACE2DEEED-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.384,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.384,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.232,
+         "name": "Khruangbin"
+        }
+       ]
+      },
+      {
+       "name": "The Tim Ferriss Show",
+       "why": "Uncovers peak performance tactics and mental discipline prized by high-focus athletes and climbers.",
+       "id": "70EC9849-ADC9-4319-AF32-E60762AF012A",
+       "affinity": 0.946,
+       "tags": [
+        "Business",
+        "Entrepreneurship"
+       ],
+       "image": "https://images.qloo.com/i/70EC9849-ADC9-4319-AF32-E60762AF012A-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/70EC9849-ADC9-4319-AF32-E60762AF012A-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.356,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.352,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.292,
+         "name": "Khruangbin"
+        }
+       ]
+      },
+      {
+       "name": "FoundMyFitness",
+       "why": "Dives deep into health, nutrition, and physical optimization for an audience that treats their body like an instrument.",
+       "id": "A234D9B8-2A6E-4AB8-8A10-202023DE037B",
+       "affinity": 0.916,
+       "tags": [
+        "Medicine",
+        "Health & Fitness",
+        "Nutrition"
+       ],
+       "image": "https://images.qloo.com/i/A234D9B8-2A6E-4AB8-8A10-202023DE037B-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/A234D9B8-2A6E-4AB8-8A10-202023DE037B-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.372,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.364,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.264,
+         "name": "Khruangbin"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Neighbours to team up with",
+     "kind": "place",
+     "picks": [
+      {
+       "name": "Twist & Shout Records",
+       "why": "Denver's legendary independent record shop for cross-promotions with the crowd's vinyl and groove tastes.",
+       "id": "778EBC0D-C8FE-425A-B340-3784DE36C631",
+       "affinity": 0.93,
+       "where": "Denver, Colorado, US",
+       "tags": [
+        "Cd store",
+        "Dvd store",
+        "Record store",
+        "Music store",
+        "Video store",
+        "Used cd store"
+       ],
+       "detail": "2508 E Colfax Ave Denver, CO 80206",
+       "image": "https://images.qloo.com/i/778EBC0D-C8FE-425A-B340-3784DE36C631-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/778EBC0D-C8FE-425A-B340-3784DE36C631-420x-auto.jpg",
+       "website": "https://twistandshout.com/",
+       "rating": 4.7,
+       "drivers": [
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.353,
+         "name": "Khruangbin"
+        },
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.33,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.317,
+         "name": "Patagonia"
+        }
+       ]
+      },
+      {
+       "name": "REI",
+       "why": "The ultimate local flagship for outdoor gear and community events shared by Patagonia and climbing regulars.",
+       "id": "4C74B105-B478-422E-B3BF-02347D7AE07A",
+       "affinity": 0.764,
+       "where": "Denver, Colorado, US",
+       "tags": [
+        "Ski shop",
+        "Childrens clothing store",
+        "Clothing store",
+        "Canoe kayak store",
+        "Bicycle shop",
+        "Shoe store"
+       ],
+       "detail": "1416 Platte St Denver, CO 80202",
+       "image": "https://images.qloo.com/i/4C74B105-B478-422E-B3BF-02347D7AE07A-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/4C74B105-B478-422E-B3BF-02347D7AE07A-420x-auto.jpg",
+       "website": "https://www.rei.com/stores/denver?y_source=1_MTQ1MzM4My03MTUtbG9jYXRpb24ud2Vic2l0ZQ%3D%3D",
+       "rating": 4.4,
+       "drivers": [
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.364,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.339,
+         "name": "Patagonia"
+        },
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.297,
+         "name": "Khruangbin"
+        }
+       ]
+      },
+      {
+       "name": "Wax Trax Records",
+       "why": "An iconic Capitol Hill spot for deep-crate digging that fits right into the community's music-first aesthetic.",
+       "id": "7D905BD2-190B-49B7-A483-DE43E0628C51",
+       "affinity": 0.752,
+       "where": "Capitol Hill, Denver, Colorado, US",
+       "tags": [
+        "Used cd store",
+        "Music store",
+        "Cd store",
+        "Record store",
+        "Cultural",
+        "Unique"
+       ],
+       "detail": "638 E 13th Ave Denver, CO 80203",
+       "image": "https://images.qloo.com/i/7D905BD2-190B-49B7-A483-DE43E0628C51-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/7D905BD2-190B-49B7-A483-DE43E0628C51-420x-auto.jpg",
+       "website": "http://www.waxtraxrecords.com/",
+       "rating": 4.7,
+       "drivers": [
+        {
+         "signal": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+         "impact": 0.342,
+         "name": "Khruangbin"
+        },
+        {
+         "signal": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+         "impact": 0.335,
+         "name": "Free Solo"
+        },
+        {
+         "signal": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+         "impact": 0.323,
+         "name": "Patagonia"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "caveats": [],
+   "unverified": [],
+   "grounding": {
+    "kept": 18,
+    "dropped": 0
+   }
+  },
+  "trace": [
+   {
+    "step": 1,
+    "tool": "find_entities",
+    "args": {
+     "names": [
+      "Patagonia",
+      "Free Solo",
+      "Khruangbin"
+     ]
+    },
+    "ok": true,
+    "error": null
+   },
+   {
+    "step": 2,
+    "tool": "recommend",
+    "args": {
+     "take": 4,
+     "entity_ids": [
+      "DB4CE34E-3A63-4947-946F-9D52502C5762",
+      "9CCE73AF-859A-4E23-981F-E7A102241E74",
+      "BAF6317A-DF94-4C90-92AE-63F86560C21B"
+     ],
+     "target_type": "artist"
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   },
+   {
+    "step": 2,
+    "tool": "recommend",
+    "args": {
+     "entity_ids": [
+      "DB4CE34E-3A63-4947-946F-9D52502C5762",
+      "9CCE73AF-859A-4E23-981F-E7A102241E74",
+      "BAF6317A-DF94-4C90-92AE-63F86560C21B"
+     ],
+     "take": 4,
+     "target_type": "movie"
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   },
+   {
+    "step": 2,
+    "tool": "recommend",
+    "args": {
+     "take": 4,
+     "entity_ids": [
+      "DB4CE34E-3A63-4947-946F-9D52502C5762",
+      "9CCE73AF-859A-4E23-981F-E7A102241E74",
+      "BAF6317A-DF94-4C90-92AE-63F86560C21B"
+     ],
+     "target_type": "podcast"
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   },
+   {
+    "step": 2,
+    "tool": "bridge_tastes",
+    "args": {
+     "take": 3,
+     "target_type": "place",
+     "city": "Denver",
+     "category": "outdoor store",
+     "seeds": [
+      "Patagonia",
+      "Free Solo",
+      "Khruangbin"
+     ]
+    },
+    "ok": true,
+    "error": null,
+    "returned": 3
+   },
+   {
+    "step": 2,
+    "tool": "bridge_tastes",
+    "args": {
+     "city": "Denver",
+     "target_type": "place",
+     "category": "cafe",
+     "seeds": [
+      "Patagonia",
+      "Free Solo",
+      "Khruangbin"
+     ],
+     "take": 3
+    },
+    "ok": true,
+    "error": null,
+    "returned": 3
+   },
+   {
+    "step": 2,
+    "tool": "bridge_tastes",
+    "args": {
+     "category": "record store",
+     "target_type": "place",
+     "city": "Denver",
+     "take": 3,
+     "seeds": [
+      "Patagonia",
+      "Free Solo",
+      "Khruangbin"
+     ]
+    },
+    "ok": true,
+    "error": null,
+    "returned": 3
+   },
+   {
+    "step": 4,
+    "tool": "recommend",
+    "args": {
+     "target_type": "book",
+     "entity_ids": [
+      "DB4CE34E-3A63-4947-946F-9D52502C5762",
+      "9CCE73AF-859A-4E23-981F-E7A102241E74",
+      "BAF6317A-DF94-4C90-92AE-63F86560C21B"
+     ],
+     "take": 4
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   }
+  ],
+  "seeds": [
+   {
+    "id": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+    "name": "Patagonia"
+   },
+   {
+    "id": "9CCE73AF-859A-4E23-981F-E7A102241E74",
+    "name": "Free Solo"
+   },
+   {
+    "id": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+    "name": "Khruangbin"
+   }
+  ],
+  "stats": {
+   "tool_calls": 8,
+   "failed_calls": 0,
+   "entities_seen": 28,
+   "kept": 18,
+   "dropped": 0,
+   "seconds": 22.1
+  }
+ },
+ "comparison": {
+  "type": "comparison",
+  "rows": [
+   {
+    "kind": "artist",
+    "name": "Toro y Moi",
+    "status": "scored",
+    "affinity": 0.883,
+    "below_programme": true
+   },
+   {
+    "kind": "artist",
+    "name": "Leon Bridges",
+    "status": "in_programme",
+    "affinity": 0.942
+   },
+   {
+    "kind": "artist",
+    "name": "Parcels",
+    "status": "scored",
+    "affinity": 0.902,
+    "below_programme": true
+   },
+   {
+    "kind": "movie",
+    "name": "The Dawn Wall",
+    "status": "in_programme",
+    "affinity": 0.946
+   },
+   {
+    "kind": "movie",
+    "name": "Meru",
+    "status": "in_programme",
+    "affinity": 0.915
+   },
+   {
+    "kind": "movie",
+    "name": "Valley Uprising",
+    "status": "in_programme",
+    "affinity": 0.907
+   },
+   {
+    "kind": "book",
+    "name": "The Push",
+    "status": "scored",
+    "affinity": 0.519,
+    "below_programme": true
+   },
+   {
+    "kind": "book",
+    "name": "Gorilla and the Bird",
+    "resolved_as": "Gorilla and the Bird: A Memoir of Madness and a Mother's Love",
+    "status": "no_affinity"
+   },
+   {
+    "kind": "book",
+    "name": "Classic Rock Climbs in Colorado",
+    "status": "not_in_graph"
+   },
+   {
+    "kind": "podcast",
+    "name": "The Dirtbag Diaries",
+    "status": "scored",
+    "affinity": 0.857,
+    "below_programme": true
+   },
+   {
+    "kind": "podcast",
+    "name": "Enormocast",
+    "resolved_as": "The Enormocast: a climbing podcast",
+    "status": "scored",
+    "affinity": 0.866,
+    "below_programme": true
+   },
+   {
+    "kind": "podcast",
+    "name": "Outside Podcast",
+    "status": "scored",
+    "affinity": 0.858,
+    "below_programme": true
+   }
+  ],
+  "summary": {
+   "suggested": 12,
+   "in_programme": 4,
+   "scored": 6,
+   "no_affinity": 1,
+   "not_in_graph": 1,
+   "unchecked": 0,
+   "scored_below_programme": 6,
+   "programme_floors": {
+    "artist": 0.934,
+    "movie": 0.904,
+    "book": 0.897,
+    "podcast": 0.916,
+    "place": 0.752
+   }
+  }
+ }
+}

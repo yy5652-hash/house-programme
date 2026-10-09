@@ -1,0 +1,1019 @@
+{
+ "saved_at": "2026-10-09T13:26:43Z",
+ "source": "https://house-programme.onrender.com",
+ "request": "Independent bookshop in Chicago with a small cafe. Our readers love Octavia Butler, Studio Ghibli films and the podcast 99% Invisible. What should we screen, stock and play, and which brands fit a pop-up shelf?",
+ "seconds": 22.8,
+ "calls": 8,
+ "programme": {
+  "type": "programme",
+  "brief": {
+   "headline": "Worlds of Wonder and Design: A Curated Week for Curious Minds in Chicago",
+   "audience_read": "This crowd is united by a deep appreciation for meticulous craftsmanship, speculative world-building, and the hidden beauty of everyday design. They move seamlessly between science fiction, animated art, and tactile explorations of our built environment.",
+   "sections": [
+    {
+     "title": "On the speakers",
+     "kind": "artist",
+     "picks": [
+      {
+       "name": "Joni Mitchell",
+       "why": "Brings poetic lyricism and acoustic warmth to the cafe floor, echoing the literary depth of Octavia Butler.",
+       "id": "1A9BE260-F41E-4592-9EAF-BDD6AE774F69",
+       "affinity": 0.947,
+       "tags": [
+        "Folk",
+        "Singer Songwriter",
+        "Acoustic",
+        "Canadian",
+        "Singer & Songwriter",
+        "Folk Rock"
+       ],
+       "detail": "Joni Mitchell",
+       "image": "https://images.qloo.com/i/1A9BE260-F41E-4592-9EAF-BDD6AE774F69-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/1A9BE260-F41E-4592-9EAF-BDD6AE774F69-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.515,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.485,
+         "name": "99% Invisible"
+        }
+       ]
+      },
+      {
+       "name": "Vince Guaraldi Trio",
+       "why": "Provides melodic, nostalgic piano jazz that matches the gentle, whimsical atmosphere of Studio Ghibli.",
+       "id": "839A0AA1-78FF-453A-9F2F-A4E61C4EDFB1",
+       "affinity": 0.932,
+       "tags": [
+        "Jazz - Piano",
+        "Christmas",
+        "Jazz",
+        "Instrumental",
+        "Piano",
+        "Cool Jazz"
+       ],
+       "detail": "Vince Guaraldi Trio",
+       "image": "https://images.qloo.com/i/839A0AA1-78FF-453A-9F2F-A4E61C4EDFB1-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/839A0AA1-78FF-453A-9F2F-A4E61C4EDFB1-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.531,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.469,
+         "name": "99% Invisible"
+        }
+       ]
+      },
+      {
+       "name": "Paul Simon",
+       "why": "Blends timeless folk-rock storytelling with intricate arrangements suited for quiet reading afternoons.",
+       "id": "53A5258E-8701-4DD2-9646-6F162F170CBA",
+       "affinity": 0.924,
+       "tags": [
+        "Classic Rock",
+        "Singer & Songwriter",
+        "Rock",
+        "Singer Songwriter",
+        "Folk Rock",
+        "Acoustic"
+       ],
+       "detail": "Paul Simon",
+       "image": "https://images.qloo.com/i/53A5258E-8701-4DD2-9646-6F162F170CBA-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/53A5258E-8701-4DD2-9646-6F162F170CBA-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.528,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.472,
+         "name": "99% Invisible"
+        }
+       ]
+      },
+      {
+       "name": "Neko Case",
+       "why": "Offers lush indie-folk and alt-country textures with a striking, independent spirit.",
+       "id": "762ADEB9-8D8C-4431-BE80-0AE36C4F03E9",
+       "affinity": 0.923,
+       "tags": [
+        "Singer & Songwriter",
+        "Indie Rock",
+        "Alt Country",
+        "Alternative Country",
+        "Folk",
+        "Indie"
+       ],
+       "detail": "Neko Case",
+       "image": "https://images.qloo.com/i/762ADEB9-8D8C-4431-BE80-0AE36C4F03E9-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/762ADEB9-8D8C-4431-BE80-0AE36C4F03E9-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.513,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.487,
+         "name": "99% Invisible"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Film night",
+     "kind": "movie",
+     "picks": [
+      {
+       "name": "AlphaGo",
+       "why": "Explores human creativity and artificial intelligence, tying speculative technology to real-world stakes.",
+       "id": "4C3264C1-893B-41E0-AF68-36089B40BB45",
+       "affinity": 0.902,
+       "tags": [
+        "Documentary",
+        "Sports",
+        "Sport",
+        "Technology documentary",
+        "Sports documentary",
+        "Science documentary"
+       ],
+       "detail": "2017, Greg Kohs",
+       "image": "https://images.qloo.com/i/4C3264C1-893B-41E0-AF68-36089B40BB45-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/4C3264C1-893B-41E0-AF68-36089B40BB45-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.372,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.338,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.29,
+         "name": "Studio Ghibli"
+        }
+       ]
+      },
+      {
+       "name": "Jiro Dreams of Sushi",
+       "why": "An intimate, meticulous documentary about lifelong dedication to craft that mirrors Ghibli's artistic ethos.",
+       "id": "35E30D1E-0141-45B2-AAE2-C7ABB86A4F87",
+       "affinity": 0.901,
+       "tags": [
+        "Documentary",
+        "Biographical",
+        "Culinary",
+        "Meticulous",
+        "Observational",
+        "Tactile"
+       ],
+       "detail": "2011, David Gelb",
+       "image": "https://images.qloo.com/i/35E30D1E-0141-45B2-AAE2-C7ABB86A4F87-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/35E30D1E-0141-45B2-AAE2-C7ABB86A4F87-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.389,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.332,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.279,
+         "name": "Studio Ghibli"
+        }
+       ]
+      },
+      {
+       "name": "Three Identical Strangers",
+       "why": "A gripping documentary mystery that unravels nature, nurture, and unexpected human connections.",
+       "id": "FAE9F10A-9BA6-4FEF-A024-626A65EE2CF5",
+       "affinity": 0.898,
+       "tags": [
+        "Biography",
+        "Mystery",
+        "Drama",
+        "Documentary",
+        "History",
+        "Historical"
+       ],
+       "detail": "2018, Tim Wardle",
+       "image": "https://images.qloo.com/i/FAE9F10A-9BA6-4FEF-A024-626A65EE2CF5-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/FAE9F10A-9BA6-4FEF-A024-626A65EE2CF5-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.419,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.331,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.25,
+         "name": "Studio Ghibli"
+        }
+       ]
+      },
+      {
+       "name": "The Mask You Live In",
+       "why": "A thoughtful social-issue documentary engaging this audience's strong interest in cultural critique and society.",
+       "id": "42C1A47F-0617-4C38-AB37-7FB555826817",
+       "affinity": 0.896,
+       "tags": [
+        "News",
+        "Documentary",
+        "Gender studies documentary",
+        "Social issue documentary",
+        "Academic tone",
+        "Naturalistic"
+       ],
+       "detail": "2015, Jennifer Siebel Newsom",
+       "image": "https://images.qloo.com/i/42C1A47F-0617-4C38-AB37-7FB555826817-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/42C1A47F-0617-4C38-AB37-7FB555826817-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.37,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.35,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.279,
+         "name": "Studio Ghibli"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Book club",
+     "kind": "book",
+     "picks": [
+      {
+       "name": "Monstress, Volume 4: The Chosen",
+       "why": "Combines dark fantasy and intricate graphic world-building beloved by Ghibli and sci-fi readers alike.",
+       "id": "FCF65402-C970-4BDA-81FC-664454CAF80A",
+       "affinity": 0.862,
+       "detail": "2019, Marjorie M. Liu",
+       "image": "https://images.qloo.com/i/FCF65402-C970-4BDA-81FC-664454CAF80A-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/FCF65402-C970-4BDA-81FC-664454CAF80A-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.52,
+         "name": "Studio Ghibli"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.48,
+         "name": "Octavia E. Butler"
+        }
+       ]
+      },
+      {
+       "name": "Ghost Tree",
+       "why": "A haunting, beautifully paced journey into memory and heritage set against a Japanese backdrop.",
+       "id": "CBDC18BE-C790-4DD1-9669-B27D4C994F8F",
+       "affinity": 0.851,
+       "tags": [
+        "Paranormal",
+        "Ghosts",
+        "Horror",
+        "Japan",
+        "Fantasy",
+        "Comic Book"
+       ],
+       "detail": "2019, Bobby Curnow",
+       "image": "https://images.qloo.com/i/CBDC18BE-C790-4DD1-9669-B27D4C994F8F-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/CBDC18BE-C790-4DD1-9669-B27D4C994F8F-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.541,
+         "name": "Studio Ghibli"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.459,
+         "name": "Octavia E. Butler"
+        }
+       ]
+      },
+      {
+       "name": "Mare Internum",
+       "why": "An isolated planetary sci-fi webcomic that speaks directly to speculative fiction enthusiasts.",
+       "id": "05063E0A-1873-4148-AC54-0A6B649DF1AD",
+       "affinity": 0.85,
+       "detail": "2019, Der-shing Helmer",
+       "image": "https://images.qloo.com/i/05063E0A-1873-4148-AC54-0A6B649DF1AD-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/05063E0A-1873-4148-AC54-0A6B649DF1AD-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.52,
+         "name": "Studio Ghibli"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.48,
+         "name": "Octavia E. Butler"
+        }
+       ]
+      },
+      {
+       "name": "The 99% Invisible City: A Field Guide to the Hidden World of Everyday Design",
+       "why": "A direct companion to the podcast, uncovering the fascinating architecture and hidden design in our cities.",
+       "id": "CFA0E708-7835-476F-96DC-9E37E582F885",
+       "affinity": 0.849,
+       "tags": [
+        "Audiobook",
+        "Urban Planning",
+        "Architecture",
+        "Urbanism",
+        "History",
+        "Science"
+       ],
+       "detail": "2020, Roman Mars",
+       "image": "https://images.qloo.com/i/CFA0E708-7835-476F-96DC-9E37E582F885-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/CFA0E708-7835-476F-96DC-9E37E582F885-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.534,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.466,
+         "name": "Studio Ghibli"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Podcasts to feature",
+     "kind": "podcast",
+     "picks": [
+      {
+       "name": "the memory palace",
+       "why": "Delivers narrative-driven historical storytelling with the same poetic curiosity as 99% Invisible.",
+       "id": "87EAEE3F-8F2D-4478-AB1A-E803F7BF69D0",
+       "affinity": 0.929,
+       "tags": [
+        "History"
+       ],
+       "image": "https://images.qloo.com/i/87EAEE3F-8F2D-4478-AB1A-E803F7BF69D0-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/87EAEE3F-8F2D-4478-AB1A-E803F7BF69D0-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.402,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.306,
+         "name": "Studio Ghibli"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.292,
+         "name": "Octavia E. Butler"
+        }
+       ]
+      },
+      {
+       "name": "Radiolab",
+       "why": "Blends science, philosophy, and innovative sound design for listeners who love exploring how things work.",
+       "id": "B4D6B6FD-7146-4E1C-AE48-B8EBD2BB71DA",
+       "affinity": 0.92,
+       "tags": [
+        "Natural Sciences",
+        "Society & Culture",
+        "Documentary",
+        "Science"
+       ],
+       "image": "https://images.qloo.com/i/B4D6B6FD-7146-4E1C-AE48-B8EBD2BB71DA-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/B4D6B6FD-7146-4E1C-AE48-B8EBD2BB71DA-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.403,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.313,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.284,
+         "name": "Studio Ghibli"
+        }
+       ]
+      },
+      {
+       "name": "Articles of Interest",
+       "why": "Unpacks the social history of design and everyday objects through brilliant narrative audio.",
+       "id": "68D91359-A380-4BC3-9572-947455C4FD55",
+       "affinity": 0.92,
+       "tags": [
+        "Fashion & Beauty",
+        "Arts"
+       ],
+       "image": "https://images.qloo.com/i/68D91359-A380-4BC3-9572-947455C4FD55-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/68D91359-A380-4BC3-9572-947455C4FD55-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.386,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.318,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.297,
+         "name": "Studio Ghibli"
+        }
+       ]
+      },
+      {
+       "name": "Invisibilia",
+       "why": "Explores the invisible psychological and social forces shaping human behavior.",
+       "id": "33745E56-8476-43AE-ACAD-1E2D30AF9307",
+       "affinity": 0.916,
+       "tags": [
+        "Society & Culture",
+        "Social Sciences",
+        "Personal Journals",
+        "Science"
+       ],
+       "image": "https://images.qloo.com/i/33745E56-8476-43AE-ACAD-1E2D30AF9307-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/33745E56-8476-43AE-ACAD-1E2D30AF9307-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.385,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.345,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.27,
+         "name": "Studio Ghibli"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Pop-up shelf brands",
+     "kind": "brand",
+     "picks": [
+      {
+       "name": "Fab",
+       "why": "Offers a curated selection of modern, design-centric home goods and lifestyle items for the aesthetic-minded reader.",
+       "id": "F29AA197-30CA-431D-A533-BFCFFFCCEB15",
+       "affinity": 0.899,
+       "tags": [
+        "Mobile App",
+        "E Commerce App",
+        "Inspired",
+        "Curated",
+        "Modern",
+        "Playful"
+       ],
+       "image": "https://images.qloo.com/i/F29AA197-30CA-431D-A533-BFCFFFCCEB15-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/F29AA197-30CA-431D-A533-BFCFFFCCEB15-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.394,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.315,
+         "name": "Studio Ghibli"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.291,
+         "name": "Octavia E. Butler"
+        }
+       ]
+      },
+      {
+       "name": "Foursquare",
+       "why": "Brings geospatial intelligence and urban exploration tools that appeal to cartography and city-design fans.",
+       "id": "D8119303-B68E-4EFC-AEC1-1E6671B52516",
+       "affinity": 0.902,
+       "tags": [
+        "Software",
+        "Mobile App",
+        "Home & Utilities App",
+        "Analytical",
+        "Precise",
+        "Innovative"
+       ],
+       "image": "https://images.qloo.com/i/D8119303-B68E-4EFC-AEC1-1E6671B52516-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/D8119303-B68E-4EFC-AEC1-1E6671B52516-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.383,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.325,
+         "name": "Studio Ghibli"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.293,
+         "name": "Octavia E. Butler"
+        }
+       ]
+      },
+      {
+       "name": "Shopify",
+       "why": "Celebrates independent commerce, empowering creator-led retail and community entrepreneurship.",
+       "id": "DC038451-9A8F-49A3-88BE-8165E50D1021",
+       "affinity": 0.897,
+       "tags": [
+        "Software",
+        "Empowering",
+        "Efficient",
+        "Reliable",
+        "Innovative",
+        "Financial Independence"
+       ],
+       "image": "https://images.qloo.com/i/DC038451-9A8F-49A3-88BE-8165E50D1021-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/DC038451-9A8F-49A3-88BE-8165E50D1021-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.39,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.317,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.294,
+         "name": "Studio Ghibli"
+        }
+       ]
+      },
+      {
+       "name": "ShipStation",
+       "why": "A nod to efficient fulfillment, fitting the behind-the-scenes appreciation of how systems actually operate.",
+       "id": "85A2BF87-9BDC-4AAB-BD1A-614E46E787CC",
+       "affinity": 0.899,
+       "tags": [
+        "Software",
+        "Efficient",
+        "Reliable",
+        "Empowering",
+        "Professional",
+        "Practical"
+       ],
+       "image": "https://images.qloo.com/i/85A2BF87-9BDC-4AAB-BD1A-614E46E787CC-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/85A2BF87-9BDC-4AAB-BD1A-614E46E787CC-420x-auto.jpg",
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.365,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.32,
+         "name": "Studio Ghibli"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.316,
+         "name": "Octavia E. Butler"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Neighbours to team up with",
+     "kind": "place",
+     "picks": [
+      {
+       "name": "Quimby's Bookstore",
+       "why": "A legendary Wicker Park haven for indie zines, comics, and offbeat underground publishing.",
+       "id": "7FDE5B2B-5EDA-4981-871E-153B5991EE36",
+       "affinity": 0.855,
+       "where": "West Town, Chicago, Illinois, US",
+       "tags": [
+        "Book store",
+        "Alt",
+        "Unique",
+        "Quirky",
+        "Quiet",
+        "Casual"
+       ],
+       "detail": "1854 W North Ave Chicago, IL 60622",
+       "image": "https://images.qloo.com/i/7FDE5B2B-5EDA-4981-871E-153B5991EE36-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/7FDE5B2B-5EDA-4981-871E-153B5991EE36-420x-auto.jpg",
+       "website": "http://quimbys.com/",
+       "rating": 4.7,
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.387,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.321,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.292,
+         "name": "Studio Ghibli"
+        }
+       ]
+      },
+      {
+       "name": "Dusty Groove",
+       "why": "An independent Chicago record shop stocking rare vinyl and global grooves across diverse genres.",
+       "id": "8E839AB4-DBF0-408D-89F3-2ECF4E549F07",
+       "affinity": 0.85,
+       "where": "East Village, Chicago, Illinois, US",
+       "tags": [
+        "Record store",
+        "Stylish",
+        "Professional",
+        "Organized",
+        "Quiet",
+        "Casual"
+       ],
+       "detail": "1120 N Ashland Ave Chicago, IL 60622",
+       "image": "https://images.qloo.com/i/8E839AB4-DBF0-408D-89F3-2ECF4E549F07-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/8E839AB4-DBF0-408D-89F3-2ECF4E549F07-420x-auto.jpg",
+       "website": "http://www.dustygroove.com/",
+       "rating": 4.7,
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.377,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.337,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.286,
+         "name": "Studio Ghibli"
+        }
+       ]
+      },
+      {
+       "name": "Bucket O' Blood Books and Records",
+       "why": "A quirky local spot specializing in sci-fi, fantasy, horror books, and indie punk vinyl.",
+       "id": "1F7D2754-800A-47A5-935C-666D963D9A16",
+       "affinity": 0.836,
+       "where": "Avondale, Chicago, Illinois, US",
+       "tags": [
+        "Dvd store",
+        "Comic book store",
+        "Book store",
+        "Record store",
+        "Lively",
+        "Casual"
+       ],
+       "detail": "3182 N Elston Ave Chicago, IL 60618",
+       "image": "https://images.qloo.com/i/1F7D2754-800A-47A5-935C-666D963D9A16-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/1F7D2754-800A-47A5-935C-666D963D9A16-420x-auto.jpg",
+       "website": "http://www.bucketoblood.com/",
+       "rating": 4.8,
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.38,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.32,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.3,
+         "name": "Studio Ghibli"
+        }
+       ]
+      },
+      {
+       "name": "57th Street Books",
+       "why": "A cozy, mazelike Hyde Park literary sanctuary with an extensive, thoughtful collection.",
+       "id": "14481A71-9592-4C29-BE9D-3691FDD3F108",
+       "affinity": 0.849,
+       "where": "Hyde Park, Chicago, Illinois, US",
+       "tags": [
+        "Book store",
+        "Cozy",
+        "Quiet",
+        "Charming",
+        "Welcoming",
+        "Literary"
+       ],
+       "detail": "1301 E 57th St Chicago, IL 60637",
+       "image": "https://images.qloo.com/i/14481A71-9592-4C29-BE9D-3691FDD3F108-420x-auto.jpg",
+       "thumb": "https://images.qloo.com/i/14481A71-9592-4C29-BE9D-3691FDD3F108-420x-auto.jpg",
+       "website": "http://57th.semcoop.com/",
+       "rating": 4.8,
+       "drivers": [
+        {
+         "signal": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+         "impact": 0.373,
+         "name": "99% Invisible"
+        },
+        {
+         "signal": "16464692-2B61-4644-B6A3-808B5BA8C442",
+         "impact": 0.342,
+         "name": "Octavia E. Butler"
+        },
+        {
+         "signal": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+         "impact": 0.285,
+         "name": "Studio Ghibli"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "caveats": [],
+   "unverified": [],
+   "grounding": {
+    "kept": 24,
+    "dropped": 0
+   }
+  },
+  "trace": [
+   {
+    "step": 1,
+    "tool": "find_entities",
+    "args": {
+     "names": [
+      "Octavia Butler",
+      "Studio Ghibli",
+      "99% Invisible"
+     ]
+    },
+    "ok": true,
+    "error": null
+   },
+   {
+    "step": 2,
+    "tool": "recommend",
+    "args": {
+     "take": 4,
+     "entity_ids": [
+      "16464692-2B61-4644-B6A3-808B5BA8C442",
+      "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+      "1B466B0E-323A-4EFD-A314-8737F58F1E1B"
+     ],
+     "target_type": "artist"
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   },
+   {
+    "step": 2,
+    "tool": "recommend",
+    "args": {
+     "take": 4,
+     "target_type": "movie",
+     "entity_ids": [
+      "16464692-2B61-4644-B6A3-808B5BA8C442",
+      "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+      "1B466B0E-323A-4EFD-A314-8737F58F1E1B"
+     ]
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   },
+   {
+    "step": 2,
+    "tool": "recommend",
+    "args": {
+     "take": 4,
+     "entity_ids": [
+      "16464692-2B61-4644-B6A3-808B5BA8C442",
+      "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+      "1B466B0E-323A-4EFD-A314-8737F58F1E1B"
+     ],
+     "target_type": "book"
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   },
+   {
+    "step": 2,
+    "tool": "recommend",
+    "args": {
+     "target_type": "podcast",
+     "entity_ids": [
+      "16464692-2B61-4644-B6A3-808B5BA8C442",
+      "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+      "1B466B0E-323A-4EFD-A314-8737F58F1E1B"
+     ],
+     "take": 4
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   },
+   {
+    "step": 2,
+    "tool": "recommend",
+    "args": {
+     "target_type": "brand",
+     "entity_ids": [
+      "16464692-2B61-4644-B6A3-808B5BA8C442",
+      "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+      "1B466B0E-323A-4EFD-A314-8737F58F1E1B"
+     ],
+     "take": 4
+    },
+    "ok": true,
+    "error": null,
+    "returned": 4
+   },
+   {
+    "step": 2,
+    "tool": "bridge_tastes",
+    "args": {
+     "category": "bookstore",
+     "take": 3,
+     "target_type": "place",
+     "seeds": [
+      "Octavia E. Butler",
+      "Studio Ghibli",
+      "99% Invisible"
+     ],
+     "city": "Chicago"
+    },
+    "ok": true,
+    "error": null,
+    "returned": 3
+   },
+   {
+    "step": 2,
+    "tool": "bridge_tastes",
+    "args": {
+     "take": 3,
+     "seeds": [
+      "Octavia E. Butler",
+      "Studio Ghibli",
+      "99% Invisible"
+     ],
+     "category": "record store",
+     "target_type": "place",
+     "city": "Chicago"
+    },
+    "ok": true,
+    "error": null,
+    "returned": 3
+   }
+  ],
+  "seeds": [
+   {
+    "id": "16464692-2B61-4644-B6A3-808B5BA8C442",
+    "name": "Octavia E. Butler"
+   },
+   {
+    "id": "D1222FA1-A6FD-45DE-8993-D89E2BB4777A",
+    "name": "Studio Ghibli"
+   },
+   {
+    "id": "1B466B0E-323A-4EFD-A314-8737F58F1E1B",
+    "name": "99% Invisible"
+   }
+  ],
+  "stats": {
+   "tool_calls": 8,
+   "failed_calls": 0,
+   "entities_seen": 29,
+   "kept": 24,
+   "dropped": 0,
+   "seconds": 19.3
+  }
+ },
+ "comparison": {
+  "type": "comparison",
+  "rows": [
+   {
+    "kind": "movie",
+    "name": "Spirited Away",
+    "status": "scored",
+    "affinity": 0.802,
+    "below_programme": true
+   },
+   {
+    "kind": "movie",
+    "name": "My Neighbor Totoro",
+    "status": "scored",
+    "affinity": 0.805,
+    "below_programme": true
+   },
+   {
+    "kind": "book",
+    "name": "Braiding Sweetgrass",
+    "resolved_as": "Braiding Sweetgrass: Indigenous Wisdom, Scientific Knowledge, and the Teachings of Plants",
+    "status": "scored",
+    "affinity": 0.713,
+    "below_programme": true
+   },
+   {
+    "kind": "podcast",
+    "name": "Radiolab",
+    "status": "in_programme",
+    "affinity": 0.92
+   },
+   {
+    "kind": "podcast",
+    "name": "Heavyweight",
+    "status": "scored",
+    "affinity": 0.881,
+    "below_programme": true
+   }
+  ],
+  "summary": {
+   "suggested": 5,
+   "in_programme": 1,
+   "scored": 4,
+   "no_affinity": 0,
+   "not_in_graph": 0,
+   "unchecked": 0,
+   "scored_below_programme": 4,
+   "programme_floors": {
+    "artist": 0.923,
+    "movie": 0.896,
+    "book": 0.849,
+    "podcast": 0.916,
+    "brand": 0.897,
+    "place": 0.836
+   }
+  }
+ }
+}

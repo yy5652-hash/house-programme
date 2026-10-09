@@ -44,6 +44,7 @@
   #work li .got { font: 12px var(--mono); white-space: nowrap; }
   #work .ok .got { color: var(--good); } #work .fail .got { color: var(--accent); }
   #now { margin-top: 12px; font: 13px var(--mono); color: var(--muted); display: flex; gap: 10px; align-items: center; }
+  #now[hidden] { display: none; }
   #now .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); animation: beat 1s ease-in-out infinite; }
   @keyframes beat { 0%, 100% { opacity: .35; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.15); } }
   @media (prefers-reduced-motion: reduce) { #now .dot { animation: none; } }
@@ -99,9 +100,9 @@
     <textarea id="request" maxlength="600" required
       placeholder="We run a 40-seat natural wine bar in Lisbon. Regulars talk about Wes Anderson, Phoebe Bridgers and Sally Rooney. Plan our next month."></textarea>
     <div class="row">
-      <button type="button" class="chip" data-example="We run a 40-seat natural wine bar in Lisbon. Regulars talk about Wes Anderson, Phoebe Bridgers and Sally Rooney. Plan our next month: music, one film night, a book for the club, and neighbours to team up with.">Wine bar, Lisbon</button>
-      <button type="button" class="chip" data-example="Independent bookshop in Chicago with a small cafe. Our readers love Octavia Butler, Studio Ghibli films and the podcast 99% Invisible. What should we screen, stock and play, and which brands fit a pop-up shelf?">Bookshop, Chicago</button>
-      <button type="button" class="chip" data-example="Climbing gym cafe in Denver. Members are into Patagonia, Free Solo, and Khruangbin. Suggest a playlist direction, a film night, a podcast to sponsor and local places to partner with.">Climbing gym, Denver</button>
+      <button type="button" class="chip" data-saved="lisbon" data-example="We run a 40-seat natural wine bar in Lisbon. Regulars talk about Wes Anderson, Phoebe Bridgers and Sally Rooney. Plan our next month: music, one film night, a book for the club, and neighbours to team up with.">Wine bar, Lisbon</button>
+      <button type="button" class="chip" data-saved="chicago" data-example="Independent bookshop in Chicago with a small cafe. Our readers love Octavia Butler, Studio Ghibli films and the podcast 99% Invisible. What should we screen, stock and play, and which brands fit a pop-up shelf?">Bookshop, Chicago</button>
+      <button type="button" class="chip" data-saved="denver" data-example="Climbing gym cafe in Denver. Members are into Patagonia, Free Solo, and Khruangbin. Suggest a playlist direction, a film night, a podcast to sponsor and local places to partner with.">Climbing gym, Denver</button>
       <span class="count" id="count">0 / 600</span>
       <button class="go" id="go" type="submit">Build the programme</button>
     </div>
@@ -130,8 +131,18 @@ function say(text, bad) { notice.hidden = !text; notice.textContent = text || ""
 function short(args) { const s = JSON.stringify(args); return s.length > 140 ? s.slice(0, 137) + "…" : s; }
 
 box.addEventListener("input", () => { $("count").textContent = box.value.length + " / 600"; });
+// An example shows a saved real run at once; the button still runs it live.
+let live = false;
+function showSaved(saved) {
+  if (live || !saved || !saved.programme) return;
+  work.replaceChildren(); renderProgramme(saved.programme);
+  if (saved.comparison) renderComparison(saved.comparison);
+  const day = new Date(saved.saved_at).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+  say(`This is a saved real run from ${day}: ${saved.calls} questions to the taste graph, ${saved.seconds} seconds. Press “Build the programme” to run it live; the picks will differ a little each time.`);
+}
 document.querySelectorAll(".chip").forEach((chip) => chip.addEventListener("click", () => {
   box.value = chip.dataset.example; box.dispatchEvent(new Event("input")); box.focus();
+  if (chip.dataset.saved && !live) fetch("/api/examples/" + chip.dataset.saved).then((r) => (r.ok ? r.json() : null)).then((saved) => { if (box.value === chip.dataset.example) showSaved(saved); }).catch(() => {});
 }));
 
 fetch("/api/health").then((r) => r.json()).then((state) => {
@@ -262,7 +273,7 @@ form.addEventListener("submit", async (submit) => {
   submit.preventDefault();
   const request = box.value.trim();
   if (request.length < 8) { say("Tell it a little more about your crowd.", true); return; }
-  say(""); result.hidden = true; work.replaceChildren(); watch(true);
+  live = true; say(""); result.hidden = true; work.replaceChildren(); watch(true);
   go.disabled = true; go.textContent = "Working…";
   try {
     const response = await fetch("/api/programme", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ request }) });
@@ -280,7 +291,7 @@ form.addEventListener("submit", async (submit) => {
       }
     }
   } catch (error) { say(error.message || "Could not reach the server.", true); work.replaceChildren(); }
-  finally { watch(false); go.disabled = false; go.textContent = "Build the programme"; }
+  finally { live = false; watch(false); go.disabled = false; go.textContent = "Build the programme"; }
 });
 </script>
 </body>
