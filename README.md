@@ -17,6 +17,14 @@ has dozed off anyway the first page load takes about a minute).
 
 [![tests](https://github.com/yy5652-hash/house-programme/actions/workflows/tests.yml/badge.svg)](https://github.com/yy5652-hash/house-programme/actions/workflows/tests.yml)
 
+## Try it in a minute
+
+1. Open https://house-programme.onrender.com/?example=lisbon : a saved real run appears at once, with the "Second opinion"
+   under it.
+2. Press **Build the programme** to run the same brief live (about 20 to 30 seconds; every question to the taste graph shows
+   up as it happens), or write your own crowd and city.
+3. **Copy as text** takes the programme away as plain text. The six tools behind it are also an MCP server (below).
+
 ## What is in here
 
 | Part | File | What it does |
