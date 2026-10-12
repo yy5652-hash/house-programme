@@ -27,6 +27,7 @@ WEB_DIR = Path(__file__).resolve().parent / "web"
 MAX_REQUEST_CHARS = 600
 RATE_LIMIT = 8          # programmes per client
 RATE_WINDOW = 600.0     # per ten minutes
+MAX_AT_ONCE = 3         # programmes being built at the same time, across all clients: the model's free tier is small
 
 
 def load_env_file(path: Path) -> None:
@@ -65,11 +66,34 @@ class RateLimiter:
             return True
 
 
-def create_app(client: QlooClient = None, model=None, limiter: RateLimiter = None) -> FastAPI:
+class Busy:
+    """How many programmes are being built right now, with a ceiling."""
+
+    def __init__(self, limit: int):
+        self._limit, self._count, self._lock = limit, 0, threading.Lock()
+
+    def acquire(self) -> bool:
+        with self._lock:
+            if self._count >= self._limit:
+                return False
+            self._count += 1
+            return True
+
+    def release(self) -> None:
+        with self._lock:
+            self._count = max(0, self._count - 1)
+
+    @property
+    def count(self) -> int:
+        return self._count
+
+
+def create_app(client: QlooClient = None, model=None, limiter: RateLimiter = None, busy: Busy = None) -> FastAPI:
     load_env_file(Path.cwd() / ".env")
     qloo = client or QlooClient()
     llm = model or default_model()
     limits = limiter or RateLimiter(RATE_LIMIT, RATE_WINDOW)
+    slots = busy or Busy(MAX_AT_ONCE)
     app = FastAPI(title="House Programme", docs_url=None, redoc_url=None)
 
     def ready() -> dict:
@@ -100,6 +124,9 @@ def create_app(client: QlooClient = None, model=None, limiter: RateLimiter = Non
         who = (http.headers.get("x-forwarded-for") or (http.client.host if http.client else "?")).split(",")[0].strip()
         if not limits.allow(who):
             raise HTTPException(429, "Too many programmes from this address; try again in a few minutes.")
+        if not slots.acquire():
+            raise HTTPException(503, f"{slots.count} programmes are being built right now, which is all this small deployment can do at once. "
+                                     "Try again in a minute, or open one of the saved examples.")
 
         events: "queue.Queue" = queue.Queue()
 
@@ -128,6 +155,7 @@ def create_app(client: QlooClient = None, model=None, limiter: RateLimiter = Non
                 logging.getLogger("taste_mcp").exception("programme failed")
                 events.put({"type": "error", "message": "Something went wrong while building the programme."})
             finally:
+                slots.release()
                 events.put(None)
 
         threading.Thread(target=work, daemon=True).start()

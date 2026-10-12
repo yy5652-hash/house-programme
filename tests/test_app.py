@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from fastapi.testclient import TestClient  # noqa: E402
 
-from taste_mcp.app import RateLimiter, create_app  # noqa: E402
+from taste_mcp.app import Busy, RateLimiter, create_app  # noqa: E402
 from taste_mcp.qloo import QlooClient  # noqa: E402
 from test_agent import BRIDGE_CALL, ScriptedModel, client_and_transport, final  # noqa: E402
 
@@ -81,3 +81,21 @@ class AppTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class AtOnce(unittest.TestCase):
+    def test_a_full_house_answers_503_and_points_at_the_saved_examples(self):
+        class Unused:
+            configured = True
+
+        busy = Busy(1)
+        self.assertTrue(busy.acquire())
+        web = TestClient(create_app(QlooClient("k"), Unused(), busy=busy))
+        reply = web.post("/api/programme", json={"request": "A wine bar in Lisbon whose regulars love Wes Anderson."})
+        self.assertEqual(reply.status_code, 503)
+        self.assertIn("saved examples", reply.json()["error"])
+        busy.release()
+        self.assertEqual(busy.count, 0)
+        busy.release()                                          # never goes below zero
+        self.assertEqual(busy.count, 0)
+
