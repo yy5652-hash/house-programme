@@ -29,18 +29,21 @@ GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta"
 
 
 class ModelError(RuntimeError):
-    """``status`` is the HTTP status when there was one. ``busy`` means another model, or the same one later, may work."""
+    """``status`` is the HTTP status when there was one. ``busy`` means another model, or the same one later, may work.
+    ``daily`` means this model's free daily quota is spent, so asking it again today will not help."""
 
-    def __init__(self, message: str, status: Optional[int] = None, busy: bool = False):
+    def __init__(self, message: str, status: Optional[int] = None, busy: bool = False, daily: bool = False):
         super().__init__(message)
         self.status = status
         self.busy = busy
+        self.daily = daily
 
     @property
     def public(self) -> str:
         """What a visitor should read: no provider payloads."""
         if self.busy:
-            return "The language model is busy right now. Please try again in a minute."
+            return ("The language model is busy right now. Please try again in a minute; "
+                    "the example buttons above open saved real runs meanwhile.")
         return str(self)[:300]
 
 
@@ -84,7 +87,7 @@ def _http_json(method: str, url: str, headers: Dict[str, str], body: Optional[di
                     attempt += 1
                     continue
             if daily:
-                raise ModelError("the model's free daily quota is used up", error.code, busy=True) from error
+                raise ModelError("the model's free daily quota is used up", error.code, busy=True, daily=True) from error
             raise ModelError(f"model API returned HTTP {error.code}: {detail[:400]}", error.code, busy=busy) from error
         except (urllib.error.URLError, TimeoutError) as error:
             raise ModelError(f"model API call failed: {error}", busy=True) from error
@@ -106,9 +109,13 @@ class GeminiModel:
     """
 
     SLOW_SECONDS = 12.0     # a model that takes longer than this for one request is treated as having a bad spell
+    # When every model is busy at once (it happens: on 2026-10-14 most Gemini flash models answered 503 together for a
+    # while), go round again after a pause instead of failing the visitor's build; such spells usually pass in seconds.
+    ROUND_PAUSES = (4.0, 8.0)
 
     def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None, *, timeout: float = 30.0,
-                 http: Callable[..., dict] = _http_json, clock: Callable[[], float] = time.monotonic):
+                 http: Callable[..., dict] = _http_json, clock: Callable[[], float] = time.monotonic,
+                 sleep: Callable[[float], None] = time.sleep):
         self._key = api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or ""
         pinned = model or os.environ.get("GEMINI_MODEL") or ""
         self._models: List[str] = [pinned] if pinned else []
@@ -116,6 +123,7 @@ class GeminiModel:
         self._timeout = timeout
         self._http = http
         self._clock = clock
+        self._sleep = sleep
 
     def __repr__(self) -> str:
         return f"GeminiModel(model={(self._models[self._current] if self._models else 'auto')!r}, key={'set' if self._key else 'missing'})"
@@ -156,23 +164,36 @@ class GeminiModel:
         return ordered
 
     def _generate(self, body: dict) -> dict:
-        """Try the current model, then the others in order; stay on whichever one answered, unless it was slow."""
+        """Try the current model, then the others in order; stay on whichever one answered, unless it was slow.
+
+        If all of them are busy, pause and go round again (``ROUND_PAUSES``), skipping models whose daily quota is spent.
+        """
         self.model                                # makes sure the list is loaded
         last: Optional[ModelError] = None
-        for offset in range(len(self._models)):
-            index = (self._current + offset) % len(self._models)
-            url = f"{GEMINI_BASE}/models/{self._models[index]}:generateContent"
-            started = self._clock()
-            try:
-                reply = self._http("POST", url, self._headers(), body, self._timeout)
-            except ModelError as error:
-                if not error.busy:
-                    raise
-                last = error
-                continue
-            slow = self._clock() - started > self.SLOW_SECONDS
-            self._current = (index + 1) % len(self._models) if slow else index   # an answer, but start elsewhere next time
-            return reply
+        spent = set()
+        for pause in (0.0,) + tuple(self.ROUND_PAUSES):
+            if len(spent) == len(self._models):
+                break
+            if pause:
+                self._sleep(pause)
+            for offset in range(len(self._models)):
+                index = (self._current + offset) % len(self._models)
+                if index in spent:
+                    continue
+                url = f"{GEMINI_BASE}/models/{self._models[index]}:generateContent"
+                started = self._clock()
+                try:
+                    reply = self._http("POST", url, self._headers(), body, self._timeout)
+                except ModelError as error:
+                    if not error.busy:
+                        raise
+                    if error.daily:
+                        spent.add(index)
+                    last = error
+                    continue
+                slow = self._clock() - started > self.SLOW_SECONDS
+                self._current = (index + 1) % len(self._models) if slow else index   # an answer, but start elsewhere next time
+                return reply
         raise last if last else ModelError("no model is configured")
 
     @staticmethod

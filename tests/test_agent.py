@@ -274,9 +274,10 @@ class GeminiAdapterTests(unittest.TestCase):
                                     "gemini-3.0-flash", "gemini-3.8-flash-tts")]}
     OK = {"candidates": [{"content": {"parts": [{"text": "hello"}]}}]}
 
-    def scripted(self, outcomes, model=None):
-        """``outcomes``: per generateContent request, a reply dict or a ModelError to raise."""
+    def scripted(self, outcomes, model=None, pauses=None):
+        """``outcomes``: per generateContent request, a reply dict or a ModelError to raise. ``pauses`` collects sleeps."""
         tried = []
+        pauses = [] if pauses is None else pauses
 
         def http(method, url, headers, body, timeout):
             if method == "GET":
@@ -287,7 +288,7 @@ class GeminiAdapterTests(unittest.TestCase):
                 raise outcome
             return outcome
 
-        return GeminiModel("secret-key", model, http=http), tried
+        return GeminiModel("secret-key", model, http=http, sleep=pauses.append), tried
 
     def test_a_busy_model_hands_over_to_the_next_and_the_adapter_stays_there(self):
         model, tried = self.scripted([ModelError("HTTP 503", 503, busy=True), self.OK, self.OK])
@@ -315,12 +316,36 @@ class GeminiAdapterTests(unittest.TestCase):
         self.assertEqual(model.model, "gemini-3.1-flash-lite")
 
     def test_the_order_is_lite_models_then_full_ones_newest_first(self):
-        busy = ModelError("the model's free daily quota is used up", 429, busy=True)
-        model, tried = self.scripted([busy, busy, busy, busy])
+        spent = ModelError("the model's free daily quota is used up", 429, busy=True, daily=True)
+        pauses = []
+        model, tried = self.scripted([spent, spent, spent, spent], pauses=pauses)
         with self.assertRaises(ModelError) as caught:
             model.step("s", [{"role": "user", "text": "x"}], [])
         self.assertEqual(tried, ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.8-flash", "gemini-3.5-flash"])
-        self.assertEqual(caught.exception.public, "The language model is busy right now. Please try again in a minute.")
+        self.assertEqual(pauses, [])                             # a spent daily quota is not waited on
+        self.assertTrue(caught.exception.public.startswith("The language model is busy right now. Please try again in a minute"))
+
+    def test_when_every_model_is_busy_it_pauses_and_goes_round_again(self):
+        busy = ModelError("HTTP 503", 503, busy=True)
+        pauses = []
+        model, tried = self.scripted([busy, busy, busy, busy, busy, self.OK], pauses=pauses)
+        self.assertEqual(model.step("s", [{"role": "user", "text": "x"}], [])["text"], "hello")
+        self.assertEqual(tried, ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.8-flash", "gemini-3.5-flash",
+                                 "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"])
+        self.assertEqual(pauses, [GeminiModel.ROUND_PAUSES[0]])
+        self.assertEqual(model.model, "gemini-3.1-flash-lite")
+
+    def test_a_long_busy_spell_fails_after_the_last_round(self):
+        busy = ModelError("HTTP 503", 503, busy=True)
+        spent = ModelError("the model's free daily quota is used up", 429, busy=True, daily=True)
+        pauses = []
+        model, tried = self.scripted([spent, busy, busy, busy] + [busy] * 3 + [busy] * 3, pauses=pauses)
+        with self.assertRaises(ModelError) as caught:
+            model.step("s", [{"role": "user", "text": "x"}], [])
+        self.assertEqual(len(tried), 10)                          # the spent model is asked once, the other three each round
+        self.assertEqual(tried.count("gemini-3.5-flash-lite"), 1)
+        self.assertEqual(pauses, list(GeminiModel.ROUND_PAUSES))
+        self.assertTrue(caught.exception.busy)
 
     def test_an_error_that_is_not_about_load_is_not_retried_elsewhere(self):
         model, tried = self.scripted([ModelError("HTTP 400: bad request", 400)])
@@ -329,10 +354,11 @@ class GeminiAdapterTests(unittest.TestCase):
         self.assertEqual(tried, ["gemini-3.5-flash-lite"])
 
     def test_a_pinned_model_has_no_fallback(self):
-        model, tried = self.scripted([ModelError("HTTP 503", 503, busy=True)], model="gemini-pinned")
+        busy = ModelError("HTTP 503", 503, busy=True)
+        model, tried = self.scripted([busy, busy, busy], model="gemini-pinned")
         with self.assertRaises(ModelError):
             model.step("s", [{"role": "user", "text": "x"}], [])
-        self.assertEqual(tried, ["gemini-pinned"])
+        self.assertEqual(tried, ["gemini-pinned"] * 3)              # no other model; only the same one after each pause
 
     def test_missing_key_and_empty_reply(self):
         with self.assertRaises(ModelError):
