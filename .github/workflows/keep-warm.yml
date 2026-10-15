@@ -3,6 +3,8 @@ name: keep-warm
 # GitHub starts scheduled runs late: asked for every five or ten minutes, they came 16 to 30 minutes apart, which still
 # let the instance sleep. So each run pings for most of an hour, five minutes apart, and runs are scheduled every half
 # hour; two overlapping runs just ping twice. Minutes are free for a public repository.
+# It stops after judging ends (16 November, Pacific time): Render's free tier has 750 instance hours a month per
+# workspace, shared with the other demo, and a month of pinging alone would use almost all of them.
 on:
   schedule:
     - cron: "7,37 * * * *"
@@ -14,6 +16,10 @@ jobs:
     timeout-minutes: 62
     steps:
       - run: |
+          if [ "$(date -u +%Y%m%d%H)" -ge 2026111708 ]; then
+            echo "Judging ended on 16 November (Pacific); keep-warm is off."
+            exit 0
+          fi
           for i in $(seq 1 11); do
             curl --silent --show-error --fail --max-time 120 https://house-programme.onrender.com/api/health || true
             echo " $(date -u +%H:%M:%S)"
