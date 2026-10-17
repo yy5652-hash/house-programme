@@ -1,27 +1,39 @@
 name: keep-warm
-# The demo runs on a free instance that sleeps after 15 quiet minutes and takes about a minute to wake.
-# GitHub starts scheduled runs late: asked for every five or ten minutes, they came 16 to 30 minutes apart, which still
-# let the instance sleep. So each run pings for most of an hour, five minutes apart, and runs are scheduled every half
-# hour; two overlapping runs just ping twice. Minutes are free for a public repository.
-# It stops after judging ends (16 November, Pacific time): Render's free tier has 750 instance hours a month per
-# workspace, shared with the other demo, and a month of pinging alone would use almost all of them.
+# The demo runs on a free instance that sleeps after 15 quiet minutes; a sleeping instance takes 15 seconds to a minute to
+# answer its first request. Render's free tier has 750 instance hours a month per workspace, shared with the other demo, so
+# the demo is kept awake all the time only while the judges may open it: from the submission deadline (30 October, 23:45
+# EDT) until after judging ends (16 November, 23:45 EST; off from 08:00 UTC on 17 November), about 400 hours. Before the
+# deadline each run keeps it awake for most of an hour, as before.
+# GitHub starts scheduled runs late (asked for every half hour, they came 30 minutes to 4.5 hours apart), so in that window
+# each run pings for almost six hours, a job's limit, and the concurrency group keeps one run waiting behind the running
+# one: when a run ends the next starts at once, and no more than two are ever queued. Minutes are free for a public repository.
 on:
   schedule:
     - cron: "7,37 * * * *"
   workflow_dispatch:
 permissions: {}
+concurrency:
+  group: keep-warm
+  cancel-in-progress: false
 jobs:
   ping:
     runs-on: ubuntu-latest
-    timeout-minutes: 62
+    timeout-minutes: 358
     steps:
       - run: |
-          if [ "$(date -u +%Y%m%d%H)" -ge 2026111708 ]; then
-            echo "Judging ended on 16 November (Pacific); keep-warm is off."
+          now=$(date -u +%s)
+          from=$(date -u -d 2026-10-31T03:45:00Z +%s)
+          until=$(date -u -d 2026-11-17T08:00:00Z +%s)
+          if [ "$now" -ge "$until" ]; then
+            echo "Judging ended on 16 November; keep-warm is off."
             exit 0
           fi
-          for i in $(seq 1 11); do
+          if [ "$now" -ge "$from" ]; then minutes=350; else minutes=50; fi
+          stop=$((now + minutes * 60))
+          if [ "$stop" -gt "$until" ]; then stop=$until; fi
+          while :; do
             curl --silent --show-error --fail --max-time 120 https://house-programme.onrender.com/api/health || true
             echo " $(date -u +%H:%M:%S)"
-            if [ "$i" -lt 11 ]; then sleep 300; fi
+            if [ $(($(date -u +%s) + 300)) -ge "$stop" ]; then break; fi
+            sleep 300
           done
