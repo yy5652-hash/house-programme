@@ -24,13 +24,13 @@
   .lede { color: var(--muted); max-width: 60ch; margin: 0 0 26px; }
   form { background: var(--card); border: 1px solid var(--rule); border-radius: 14px; padding: 16px; }
   label { display: block; font-weight: 600; margin-bottom: 8px; }
-  textarea { width: 100%; min-height: 96px; resize: vertical; padding: 12px; border-radius: 10px; border: 1px solid var(--rule);
+  textarea { width: 100%; min-height: 96px; resize: none; overflow: hidden; padding: 12px; border-radius: 10px; border: 1px solid var(--rule);
              background: var(--paper); color: var(--ink); font: inherit; }
   textarea:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
-  .chip { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 999px; padding: 6px 12px;
+  .chip, .ghost { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 999px; padding: 6px 12px;
           font: 14px var(--sans); cursor: pointer; }
-  .chip:hover { border-color: var(--accent); }
+  .chip:hover, .ghost:hover { border-color: var(--accent); }
   .go { margin-left: auto; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px;
         padding: 11px 18px; font: 600 15px var(--sans); cursor: pointer; }
   .go[disabled] { opacity: .55; cursor: progress; }
@@ -58,8 +58,13 @@
   section h3 { font: 600 12px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; margin: 0 0 12px; }
   .pick { display: grid; grid-template-columns: 1fr 132px; gap: 6px 16px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
   .pick.art { grid-template-columns: 64px 1fr 132px; }
-  .pick.art .why, .pick.art .tags { grid-column: 2 / -1; }
-  .thumb { grid-row: span 3; width: 64px; height: 88px; object-fit: cover; border-radius: 6px; background: var(--bar); }
+  .pick.art .why, .pick.art .tags, .pick.art .acts { grid-column: 2 / -1; }
+  .thumb { grid-row: span 3; align-self: start; position: relative; display: grid; place-items: center; overflow: hidden; width: 64px; height: 88px;
+           border-radius: 6px; background: var(--bar); color: var(--muted); font: 700 26px/1 var(--serif); }
+  .thumb::before { content: attr(data-letter); }
+  .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s ease; }
+  .thumb img.in { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .thumb img { transition: none; } }
   .thumb.wide { height: 64px; }
   .name a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
   .pick:last-child { border-bottom: 0; }
@@ -71,7 +76,18 @@
   .bar i { display: block; height: 100%; background: var(--good); }
   .tags { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
   .tag { font: 12px var(--mono); padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); }
-  .tag.driver { color: var(--good); border-color: var(--good); }
+  .tag.driver { color: var(--good); border-color: var(--good); border-radius: 8px; padding: 3px 9px; line-height: 1.4; white-space: normal; overflow-wrap: anywhere; max-width: 100%; }
+  .pick[hidden], section[hidden], .month[hidden] { display: none; }
+  .acts { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 16px; font: 12px var(--mono); }
+  .acts a { color: var(--accent); text-underline-offset: 3px; }
+  .acts .rm { margin-left: auto; background: none; border: 0; padding: 4px 2px; color: var(--muted); font: 12px var(--mono); cursor: pointer; }
+  .acts .rm:hover { color: var(--accent); }
+  .month { margin-top: 22px; padding: 14px 16px; border: 1px solid var(--rule); border-radius: 12px; background: var(--card); }
+  .month h3 { font: 600 12px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; margin: 0 0 8px; }
+  .month ol { list-style: none; margin: 0; padding: 0; }
+  .month li { display: flex; flex-wrap: wrap; gap: 0 14px; padding: 5px 0; border-bottom: 1px dashed var(--rule); }
+  .month li .when { font: 12px/1.9 var(--mono); color: var(--muted); min-width: 218px; }
+  .month .row { margin-top: 10px; }
   .caveats { margin-top: 26px; color: var(--warn); font-size: 15px; }
   .caveats li { margin: 4px 0; }
   details { margin-top: 26px; } summary { cursor: pointer; font-weight: 600; }
@@ -85,8 +101,19 @@
   footer a { color: inherit; }
   @media (max-width: 520px) {
     .pick, .second .pick { grid-template-columns: 1fr; } .pick.art { grid-template-columns: 56px 1fr; }
-    .pick.art .meter, .pick.art .why, .pick.art .tags { grid-column: 2; } .thumb { width: 56px; height: 76px; grid-row: span 4; }
+    .pick.art .meter, .pick.art .why, .pick.art .tags, .pick.art .acts { grid-column: 2; } .thumb { width: 56px; height: 76px; grid-row: span 4; }
+    .month li .when { min-width: 0; flex-basis: 100%; }
     .meter, .second .verdict { text-align: left; } .go { width: 100%; margin-left: 0; }
+  }
+  @media print {
+    :root { --paper: #fff; --ink: #111; --muted: #555; --rule: #ccc; --card: #fff; --accent: #8a2f1b; --good: #1f5a3f; --bar: #e8e2d4; }
+    body { background: #fff; font-size: 12pt; }
+    main { max-width: none; padding: 0; }
+    main > .kicker, h1, .lede, form, #notice, #work, #now, footer, details, .second, .pending, .stats button, .acts, .month .row { display: none !important; }
+    article { margin-top: 0; }
+    section + section { break-before: page; }
+    .pick, .month { break-inside: avoid; }
+    .bar, .bar i, .thumb { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
 </style>
 </head>
@@ -132,14 +159,19 @@ function el(tag, attrs = {}, ...children) {
 function say(text, bad) { notice.hidden = !text; notice.textContent = text || ""; notice.className = "notice" + (bad ? " bad" : ""); }
 function short(args) { const s = JSON.stringify(args); return s.length > 140 ? s.slice(0, 137) + "…" : s; }
 
-box.addEventListener("input", () => { $("count").textContent = box.value.length + " / 600"; });
+// The brief box grows to fit its text, so a long brief never hides behind an inner scrollbar.
+function fit() { box.style.height = "auto"; box.style.height = (box.scrollHeight + box.offsetHeight - box.clientHeight) + "px"; box.scrollTop = 0; }
+box.addEventListener("input", () => { $("count").textContent = box.value.length + " / 600"; fit(); });
+window.addEventListener("resize", fit); window.addEventListener("load", fit);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+fit();
 // An example shows a saved real run at once; the button still runs it live.
 let live = false;
 function showSaved(saved) {
   if (live || !saved || !saved.programme) return;
   work.replaceChildren(); renderProgramme(saved.programme);
   if (saved.comparison) renderComparison(saved.comparison);
-  const day = new Date(saved.saved_at).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+  const day = new Date(saved.saved_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
   say(`This is a saved real run from ${day}: ${saved.calls} questions to the taste graph, ${saved.seconds} seconds. Press “Build the programme” to run it live; the picks will differ a little each time.`);
 }
 document.querySelectorAll(".chip").forEach((chip) => chip.addEventListener("click", () => {
@@ -157,12 +189,14 @@ fetch("/api/health").then((r) => r.json()).then((state) => {
 }).catch(() => {});
 
 // The programme as plain text, for a host to paste into a message, a poster or a spreadsheet.
-function asText(data) {
+function asText(data, skip = new Set()) {
   const brief = data.brief, lines = [brief.headline || "Your programme", ""];
   if (brief.audience_read) lines.push(brief.audience_read, "");
-  for (const section of brief.sections || []) {
+  (brief.sections || []).forEach((section, si) => {
+    const kept = (section.picks || []).filter((_, pi) => !skip.has(si + ":" + pi));
+    if (!kept.length) return;
     lines.push((section.title || section.kind || "").toUpperCase());
-    for (const pick of section.picks || []) {
+    for (const pick of kept) {
       const pct = typeof pick.affinity === "number" ? Math.round(pick.affinity * 100) + "%" : "in graph";
       const isPlace = section.kind === "place" || section.kind === "destination";
       const where = isPlace ? [pick.where, pick.rating ? "rated " + pick.rating : null].filter(Boolean).join(", ") : (pick.detail && pick.detail.toLowerCase() !== String(pick.name).toLowerCase() ? pick.detail : "");
@@ -172,39 +206,134 @@ function asText(data) {
       if (isPlace && pick.website) lines.push(`  ${pick.website}`);
     }
     lines.push("");
-  }
+  });
   if ((brief.unverified || []).length) lines.push("Removed as unverified: " + brief.unverified.map((u) => u.name || u).join(", "), "");
   lines.push("Every pick comes from a Qloo taste-graph result; affinities are Qloo's scores for this crowd. Made with House Programme.");
   return lines.join("\n");
 }
 window.asText = asText;
 
+// ---- Your month: the picks laid into the next four weeks, with an .ics download ----
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const dayLabel = (d) => `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+const EVENTS = { artist: "Music night", movie: "Film night", book: "Book club", tv_show: "Series night", podcast: "Podcast night", brand: "Pop-up shelf", video_game: "Game night" };
+const isPlaceKind = (kind) => kind === "place" || kind === "destination";
+function nextThursdays(n) {
+  const first = new Date(); first.setHours(0, 0, 0, 0); first.setDate(first.getDate() + ((4 - first.getDay() + 7) % 7 || 7));
+  return Array.from({ length: n }, (_, i) => { const d = new Date(first); d.setDate(first.getDate() + 7 * i); return d; });
+}
+// groups: [{kind, picks}] of the picks still on the page. Up to three evenings from the programme, then the neighbour pop-up on a Saturday.
+function buildPlan(groups) {
+  const place = groups.find((g) => isPlaceKind(g.kind) && g.picks.length);
+  const kinds = Object.keys(EVENTS).map((k) => groups.find((g) => g.kind === k && g.picks.length)).filter(Boolean);
+  const cap = place ? 3 : 4, slots = [];
+  for (let round = 0; slots.length < cap && round < 4; round++)
+    for (const g of kinds) if (slots.length < cap && g.picks[round]) slots.push({ label: EVENTS[g.kind], pick: g.picks[round] });
+  if (place) slots.push({ label: "Pop-up with", pick: place.picks[0], place: true });
+  const thursdays = nextThursdays(4);
+  return slots.map((slot, i) => { const day = new Date(thursdays[i]); if (slot.place) day.setDate(day.getDate() + 2); return { ...slot, week: i + 1, day }; });
+}
+const planTitle = (e) => (e.place ? `Pop-up with ${e.pick.name}` : `${e.label}: ${e.pick.name}`);
+function icsFor(plan) {
+  const pad = (n) => String(n).padStart(2, "0"), encoder = new TextEncoder();
+  const at = (d, h) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(h)}0000`;
+  const esc = (t) => String(t || "").replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+  const fold = (line) => { let out = "", n = 0; for (const ch of line) { const b = encoder.encode(ch).length; if (n + b > 75) { out += "\r\n "; n = 1; } out += ch; n += b; } return out; };
+  const stamp = new Date().toISOString().replace(/[-:]|\.\d+/g, "");
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//House Programme//EN", "CALSCALE:GREGORIAN"];
+  plan.forEach((e, i) => lines.push("BEGIN:VEVENT", `UID:house-programme-${stamp}-${i + 1}@house-programme`, `DTSTAMP:${stamp}`,
+    `DTSTART:${at(e.day, 19)}`, `DTEND:${at(e.day, 21)}`, `SUMMARY:${esc(planTitle(e))}`, `DESCRIPTION:${esc(e.pick.why)}`,
+    ...(e.place && (e.pick.detail || e.pick.where) ? [`LOCATION:${esc(e.pick.detail || e.pick.where)}`] : []), "END:VEVENT"));
+  lines.push("END:VCALENDAR");
+  return lines.map(fold).join("\r\n") + "\r\n";
+}
+function download(name, text, type) {
+  const url = URL.createObjectURL(new Blob([text], { type })), a = el("a", { href: url, download: name });
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+// ---- One action link per pick, and a drafted invite for neighbours ----
+function actionFor(kind, pick) {
+  const q = encodeURIComponent, name = String(pick.name);
+  if (kind === "artist") return ["Find on Spotify", "https://open.spotify.com/search/" + q(name)];
+  if (kind === "movie" || kind === "tv_show") return ["Where to watch", "https://www.justwatch.com/us/search?q=" + q(name)];
+  if (kind === "book") return ["Find at Bookshop.org", "https://bookshop.org/search?keywords=" + q(name)];
+  if (kind === "podcast") return ["Find on Apple Podcasts", "https://podcasts.apple.com/search?term=" + q(name)];
+  if (isPlaceKind(kind)) return ["Open in Maps", "https://www.google.com/maps/search/?api=1&query=" + q([name, pick.detail || pick.where].filter(Boolean).join(" "))];
+  return ["Search the web", "https://www.google.com/search?q=" + q(name)];
+}
+// "We run a 40-seat natural wine bar in Lisbon. ..." -> "40-seat natural wine bar in Lisbon"; null when the brief does not describe a venue.
+function venueFrom(text) {
+  let s = String(text || "").trim().split(/[.!?](?:\s|$)/)[0];
+  s = s.replace(/^(?:we|i)\s+(?:run|own|operate|manage|have|are)\s+(?:an?|the)\s+/i, "").split(/\s+(?:with|where|that|and)\s+|[,;:]/)[0].trim();
+  if (s.length < 4 || s.length > 70 || /\b(?:love|loves|like|likes|talk|into|want|need|plan|suggest)\b/i.test(s)) return null;
+  return /^[A-Z]{2}/.test(s) ? s : s[0].toLowerCase() + s.slice(1);
+}
+function inviteFor(pick, venue, plan, has) {
+  const slot = plan.find((e) => e.place), when = slot ? dayLabel(slot.day) : "";
+  const loves = (pick.drivers || []).filter((d) => d && d.name).slice(0, 2).map((d) => d.name).join(" and ");
+  const pct = typeof pick.affinity === "number" ? Math.round(Math.max(0, Math.min(1, pick.affinity)) * 100) : null;
+  const idea = has("artist") ? "a listening night" : has("movie") ? "a screening night" : has("book") ? "a book-club evening" : "a pop-up evening";
+  const shortVenue = venue ? venue.split(/\s+in\s+/)[0] : "our venue";
+  const body = [`Hi ${pick.name} team,`,
+    `Greetings from ${venue ? "our " + venue : "our venue"}. ${loves ? `Our regulars love ${loves}, and Qloo's taste graph` : "Qloo's taste graph"} says your customers overlap with ours${pct != null ? ` (affinity ${pct}%)` : ""}.`,
+    `Would you co-host ${idea} with us${when ? " on " + when : ""}?`, "Happy to share the plan, split the promotion and swap audiences.", "Thanks,"];
+  return `mailto:?subject=${encodeURIComponent(`Joint event idea: ${shortVenue} × ${pick.name}`)}&body=${encodeURIComponent(body.join("\r\n"))}`;
+}
+
 function renderProgramme(data) {
-  const brief = data.brief, stats = data.stats || {};
+  const brief = data.brief, stats = data.stats || {}, venue = venueFrom(box.value);
+  const removed = new Set(), invites = [];
+  let shown = 0;
   result.replaceChildren();
   result.append(el("div", { class: "kicker" }, "This month's programme"));
   result.append(el("h2", {}, brief.headline || "Your programme"));
   if (brief.audience_read) result.append(el("p", { class: "read" }, brief.audience_read));
   const copy = el("button", { type: "button" }, "Copy as text");
   copy.addEventListener("click", async () => {
-    const text = asText(data);
+    const text = asText(data, removed);
     try { await navigator.clipboard.writeText(text); copy.textContent = "Copied"; }
     catch (error) { const box = el("textarea", { readonly: "", style: "position:fixed;left:-9999px" }, text); document.body.append(box); box.select(); document.execCommand("copy"); box.remove(); copy.textContent = "Copied"; }
     setTimeout(() => { copy.textContent = "Copy as text"; }, 1800);
   });
+  const printBtn = el("button", { type: "button" }, "Print / PDF");
+  printBtn.addEventListener("click", () => window.print());
+  const restore = el("button", { type: "button", hidden: "" });
+  restore.addEventListener("click", () => { removed.clear(); result.querySelectorAll(".pick[hidden], section[hidden]").forEach((n) => { n.hidden = false; }); refresh(); });
   result.append(el("p", { class: "stats" },
-    `${stats.tool_calls ?? 0} taste-graph calls · ${stats.kept ?? 0} picks verified · ${stats.dropped ?? 0} removed as unverified · ${stats.seconds ?? "?"}s`, copy));
-  for (const section of brief.sections || []) {
+    `${stats.tool_calls ?? 0} taste-graph calls · ${stats.kept ?? 0} picks verified · ${stats.dropped ?? 0} removed as unverified · ${stats.seconds ?? "?"}s`, copy, printBtn, restore));
+  const planBox = el("div", { class: "month" });
+  result.append(planBox);
+  const groups = () => (brief.sections || []).map((s, si) => ({ kind: s.kind, picks: (s.picks || []).filter((_, pi) => !removed.has(si + ":" + pi)) }));
+  function refresh() {
+    const g = groups(), plan = buildPlan(g), has = (k) => g.some((x) => x.kind === k && x.picks.length);
+    planBox.hidden = !plan.length; planBox.replaceChildren();
+    if (plan.length) {
+      const ics = el("button", { type: "button", class: "ghost" }, "Add to calendar (.ics)");
+      ics.addEventListener("click", () => download("house-programme-month.ics", icsFor(plan), "text/calendar;charset=utf-8"));
+      planBox.append(el("h3", {}, "Your month"),
+        el("ol", {}, ...plan.map((e) => el("li", {}, el("span", { class: "when" }, `Week ${e.week} · ${dayLabel(e.day)}, 19:00`), el("span", {}, e.place ? planTitle(e) : `${e.label} — ${e.pick.name}`)))),
+        el("div", { class: "row" }, ics, el("span", { class: "count" }, "Suggested dates; adjust them once they are in your calendar.")));
+    }
+    for (const { a, pick } of invites) a.href = inviteFor(pick, venue, plan, has);
+    restore.hidden = !removed.size; restore.textContent = `Restore ${removed.size} removed`;
+  }
+  (brief.sections || []).forEach((section, si) => {
     const block = el("section", {}, el("h3", {}, section.title || section.kind || ""));
-    for (const pick of section.picks || []) {
+    (section.picks || []).forEach((pick, pi) => {
       const pct = typeof pick.affinity === "number" ? Math.round(Math.max(0, Math.min(1, pick.affinity)) * 100) : null;
       const safe = (u) => typeof u === "string" && /^https?:\/\//i.test(u) ? u : null;
-      const isPlace = section.kind === "place" || section.kind === "destination";
+      const isPlace = isPlaceKind(section.kind);
       const image = safe(pick.thumb) || safe(pick.image), site = isPlace ? safe(pick.website) : null;
       const detail = pick.detail && pick.detail.toLowerCase() !== String(pick.name).toLowerCase() ? pick.detail : null;
       const sub = [isPlace ? pick.where : detail, isPlace && pick.rating ? "rated " + pick.rating : null].filter(Boolean).join(" · ");
-      const thumb = image ? el("img", { class: "thumb" + (isPlace ? " wide" : ""), src: image, alt: "", loading: "lazy", referrerpolicy: "no-referrer" }) : null;
-      if (thumb) thumb.addEventListener("error", () => { thumb.closest(".pick").classList.remove("art"); thumb.remove(); });
+      let thumb = null;
+      if (image) {
+        const img = el("img", { src: image, alt: "", loading: shown++ < 4 ? "eager" : "lazy", referrerpolicy: "no-referrer" });
+        img.addEventListener("load", () => img.classList.add("in")); img.addEventListener("error", () => img.remove());
+        if (img.complete && img.naturalWidth) img.classList.add("in");
+        thumb = el("div", { class: "thumb" + (isPlace ? " wide" : ""), "data-letter": (String(pick.name || "?").trim()[0] || "?").toUpperCase() }, img);
+      }
       const row = el("div", { class: "pick" + (thumb ? " art" : "") }, thumb,
         el("div", {}, el("div", { class: "name" }, site ? el("a", { href: site, target: "_blank", rel: "noopener noreferrer" }, pick.name) : pick.name),
           sub ? el("div", { class: "where" }, sub) : null),
@@ -217,10 +346,17 @@ function renderProgramme(data) {
         d.name + (typeof d.impact === "number" && d.impact <= 1 ? " " + Math.round(d.impact * 100) + "%" : "")).join(" · ")));
       for (const t of (pick.tags || []).slice(0, 4)) tags.append(el("span", { class: "tag" }, t));
       if (tags.childElementCount) row.append(tags);
+      const [actLabel, actHref] = actionFor(section.kind, pick), acts = el("div", { class: "acts" },
+        el("a", { href: actHref, target: "_blank", rel: "noopener noreferrer" }, actLabel + " ↗"));
+      if (isPlace) { const a = el("a", { href: "mailto:" }, "Draft invite"); invites.push({ a, pick }); acts.append(a); }
+      const rm = el("button", { type: "button", class: "rm", "aria-label": "Remove " + pick.name }, "× Remove");
+      rm.addEventListener("click", () => { removed.add(si + ":" + pi); row.hidden = true; block.hidden = !block.querySelector(".pick:not([hidden])"); refresh(); });
+      acts.append(rm); row.append(acts);
       block.append(row);
-    }
+    });
     result.append(block);
-  }
+  });
+  refresh();
   const notes = [...(brief.caveats || [])];
   for (const u of brief.unverified || []) notes.push(`Removed “${u.name}”: the agent suggested it but the taste graph never returned it.`);
   if (notes.length) result.append(el("ul", { class: "caveats" }, ...notes.map((n) => el("li", {}, n))));
@@ -231,6 +367,7 @@ function renderProgramme(data) {
   result.hidden = false;
   result.scrollIntoView({ behavior: "smooth", block: "start" });
 }
+window.addEventListener("beforeprint", () => document.querySelectorAll('img[loading="lazy"]').forEach((i) => { i.loading = "eager"; }));
 
 function renderComparison(data) {
   document.querySelectorAll(".pending, .second").forEach((node) => node.remove());
